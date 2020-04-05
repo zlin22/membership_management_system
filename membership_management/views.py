@@ -232,8 +232,8 @@ def stripe_create_session(request, membership_id):
                 'quantity': 1,
             }],
             client_reference_id=selected_membership.title,
-            success_url='http://127.0.0.1:8000/account?id={CHECKOUT_SESSION_ID}',
-            cancel_url='http://127.0.0.1:8000/membership',
+            success_url='https://membership-management-system.herokuapp.com/account?id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://membership-management-system.herokuapp.com/membership',
             customer_email=request.user.email,
         )
 
@@ -261,8 +261,8 @@ def stripe_subscription_create_session(request, membership_id):
                     'plan': selected_membership.subscription_plan_id,
                 }],
             },
-            success_url='http://127.0.0.1:8000/account?id={CHECKOUT_SESSION_ID}',
-            cancel_url='http://127.0.0.1:8000/membership',
+            success_url='https://membership-management-system.herokuapp.com/account?id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://membership-management-system.herokuapp.com/membership',
             client_reference_id=selected_membership.title,
             customer_email=request.user.email,
         )
@@ -314,28 +314,35 @@ def stripe_webhooks(request):
         session = event['data']['object']
 
         # Update payments table with 'paid'
-        payment = Payment.objects.get(payment_processor_id=session['id'])
-        payment.status = 'paid'
-        payment.save()
-        print('updated membership payment table')
+        try:
+            payment = Payment.objects.get(payment_processor_id=session['id'])
+            payment.status = 'paid'
+            payment.save()
+            print('updated membership payment table')
 
-        member = Member.objects.get(payments=payment.id)
-        member.membership = payment.membership
+            member = Member.objects.get(payments=payment.id)
+            member.membership = payment.membership
 
-        if session['subscription'] is None:
-            member.membership_expiration = max([date.today(
-            ) + timedelta(days=-1), member.membership_expiration]) + timedelta(days=(payment.membership.number_of_days_valid))
-            member.save()
-            print('no sub')
-        else:
-            subscription_interval = session['display_items'][0]['plan']['interval']
-            if subscription_interval == 'month':
-                member.membership_expiration = date.today() + relativedelta(months=1)
+            if member.membership_expiration is None:
+                member.membership_expiration = date.today() + timedelta(days=-1)
 
-            member.stripe_subscription_id = session['subscription']
-            member.stripe_customer_id = session['customer']
-            member.save()
-            print('sub')
+            if session['subscription'] is None:
+                member.membership_expiration = max([date.today(
+                ) + timedelta(days=-1), member.membership_expiration]) + timedelta(days=(payment.membership.number_of_days_valid))
+                member.save()
+                print('no sub')
+            else:
+                subscription_interval = session['display_items'][0]['plan']['interval']
+                if subscription_interval == 'month':
+                    member.membership_expiration = max([date.today(), member.membership_expiration]) + relativedelta(months=1)
+
+                member.stripe_subscription_id = session['subscription']
+                member.stripe_customer_id = session['customer']
+                member.save()
+                print('sub')
+        
+        except:
+            print('no matching session from webhook')
 
     if event['type'] == 'customer.subscription.updated':
         print('sub updated')
