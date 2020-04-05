@@ -59,10 +59,14 @@
                   <h6 class="text-muted card-subtitle mb-2">
                     Current Membership: {{ member.membership }}
                   </h6>
-                {% endif %}    
-              <h6 class="text-muted card-subtitle mb-2">
-                Expiration: {{ member.membership_expiration }}
-              </h6>
+                  <h6 class="text-muted card-subtitle mb-2">
+                    Next Cycle Starts: {{ member.membership_expiration }}
+                  </h6>
+                {% else %}
+                <h6 class="text-muted card-subtitle mb-2">
+                  Expiration: {{ member.membership_expiration }}
+                </h6>
+                {% endif %}
               {% else %}
               <h6 class="text-muted card-subtitle mb-2">
                 No active membership

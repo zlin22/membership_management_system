@@ -1,17 +1,13 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.urls import reverse_lazy, reverse
-from django.views.generic.edit import CreateView
-from django.contrib.auth import get_user_model, authenticate, login, logout, update_session_auth_hash, password_validation
+from django.urls import reverse
+from django.contrib.auth import get_user_model, authenticate, login, logout, update_session_auth_hash
 from .forms import MemberCreationForm
 from .models import Membership, Member, CheckInLog, Payment
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import PasswordChangeForm
-import uuid
 import stripe
-import json
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -41,7 +37,7 @@ def check_in(request):
             CheckInLog.objects.create(member=member)
             return render(request, "membership_management/check_in.html", context)
 
-        except:
+        except Exception:
             return render(request, "membership_management/check_in.html", {"message1": "Invald email. Please try again."})
 
     return render(request, "membership_management/check_in.html")
@@ -59,9 +55,8 @@ def account(request):
         else:
             try:
                 is_membership_active = (request.user.membership_expiration >= date.today())
-            except:
+            except Exception:
                 is_membership_active = False
-                
             return render(request, "membership_management/account.html", {"member": request.user, "is_membership_active": is_membership_active})
 
 
@@ -97,7 +92,7 @@ def update_member(request):
             member.phone_number = phone_number
             member.save()
             return render(request, "membership_management/account.html", {"member": member, "message": "Information updated"})
-        except:
+        except Exception:
             return render(request, "membership_management/account.html", {"member": member, "message": "Update error"})
 
 
@@ -213,7 +208,7 @@ def stripe_create_session(request, membership_id):
     if request.method == "POST":
         try:
             selected_membership = Membership.objects.get(pk=int(membership_id))
-        except:
+        except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
         # Set your secret key. Remember to switch to your live secret key in production!
@@ -247,7 +242,7 @@ def stripe_subscription_create_session(request, membership_id):
     if request.method == "POST":
         try:
             selected_membership = Membership.objects.get(pk=int(membership_id))
-        except:
+        except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
         # Set your secret key. Remember to switch to your live secret key in production!
@@ -340,8 +335,7 @@ def stripe_webhooks(request):
                 member.stripe_customer_id = session['customer']
                 member.save()
                 print('sub')
-        
-        except:
+        except Exception:
             print('no matching session from webhook')
 
     if event['type'] == 'customer.subscription.updated':
