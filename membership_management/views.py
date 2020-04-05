@@ -289,7 +289,7 @@ stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
 # Using Django
 
 # You can find your endpoint's secret in your webhook settings
-endpoint_secret = 'whsec_0hCUifwGvACRspd3zGLk0aDhqJRhxASu'
+endpoint_secret = 'whsec_UEJPGZ2zsHTJJZFXnmix2kA3jzyeewIC'
 
 
 @csrf_exempt
