@@ -57,8 +57,11 @@ def account(request):
         if not request.user.is_authenticated:
             return render(request, "membership_management/login.html")
         else:
-            is_membership_active = (
-                request.user.membership_expiration >= date.today())
+            try:
+                is_membership_active = (request.user.membership_expiration >= date.today())
+            except:
+                is_membership_active = False
+                
             return render(request, "membership_management/account.html", {"member": request.user, "is_membership_active": is_membership_active})
 
 
@@ -320,7 +323,8 @@ def stripe_webhooks(request):
         member.membership = payment.membership
 
         if session['subscription'] is None:
-            member.membership_expiration = max([date.today() + timedelta(days=-1), member.membership_expiration]) + timedelta(days=(payment.membership.number_of_days_valid))
+            member.membership_expiration = max([date.today(
+            ) + timedelta(days=-1), member.membership_expiration]) + timedelta(days=(payment.membership.number_of_days_valid))
             member.save()
             print('no sub')
         else:
