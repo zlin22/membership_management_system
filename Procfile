@@ -1,1 +1,1 @@
-web: gunicorn hotshot_web.wsgi --log-file -
+web: gunicorn hotshot_web.wsgi
