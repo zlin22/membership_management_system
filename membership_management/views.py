@@ -9,7 +9,6 @@ from .models import Membership, Member, CheckInLog, Payment
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import PasswordChangeForm
-from square.client import Client
 import uuid
 import stripe
 import json
