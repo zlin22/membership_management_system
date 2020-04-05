@@ -349,3 +349,4 @@ def stripe_webhooks(request):
 # forgot password
 # email receipts for purchases
 # admin panel QOL
+# env variables setup
