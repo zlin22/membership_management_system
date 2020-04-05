@@ -1,2 +1,4 @@
 Django
 stripe
+gunicorn
+django-heroku
