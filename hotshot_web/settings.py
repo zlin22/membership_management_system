@@ -26,7 +26,7 @@ SECRET_KEY = '!77fo6az(ok-ugqf7=dy54c=$cyda#v=4hoh02!o@3ga*svt-v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['evening-bastion-47524.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
