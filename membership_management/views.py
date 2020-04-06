@@ -10,8 +10,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 
+# START Stripe setup #############
+# Set your secret key. Remember to switch to your live secret key in production!
+# See your keys here: https://dashboard.stripe.com/account/apikeys
+stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
 
-# Create your views here.
+# You can find your endpoint's secret in your webhook settings
+endpoint_secret = 'whsec_UEJPGZ2zsHTJJZFXnmix2kA3jzyeewIC'
+# END Stripe setup ##########
 
 
 def check_in(request):
@@ -211,10 +217,6 @@ def stripe_create_session(request, membership_id):
         except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
-        # Set your secret key. Remember to switch to your live secret key in production!
-        # See your keys here: https://dashboard.stripe.com/account/apikeys
-        stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
-
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -245,10 +247,6 @@ def stripe_subscription_create_session(request, membership_id):
         except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
-        # Set your secret key. Remember to switch to your live secret key in production!
-        # See your keys here: https://dashboard.stripe.com/account/apikeys
-        stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
-
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             subscription_data={
@@ -269,22 +267,11 @@ def stripe_subscription_create_session(request, membership_id):
 
 
 def stripe_get_session(request):
-    stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
-
     session = stripe.checkout.Session.retrieve(
         request.GET['id']
     )
     return JsonResponse(session)
 
-
-# Set your secret key. Remember to switch to your live secret key in production!
-# See your keys here: https://dashboard.stripe.com/account/apikeys
-stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
-
-# Using Django
-
-# You can find your endpoint's secret in your webhook settings
-endpoint_secret = 'whsec_UEJPGZ2zsHTJJZFXnmix2kA3jzyeewIC'
 
 
 @csrf_exempt
