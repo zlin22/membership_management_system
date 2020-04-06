@@ -87,7 +87,7 @@ def account_update_success(request):
             is_membership_active = False
 
         context = {
-            "member": request.user, 
+            "member": request.user,
             "is_membership_active": is_membership_active,
             "message": "Your account is updated!"
         }

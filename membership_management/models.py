@@ -44,7 +44,7 @@ class Member(AbstractUser):
     stripe_customer_id = models.CharField(max_length=500, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name',]
+    REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
     objects = CustomUserManager()
 
