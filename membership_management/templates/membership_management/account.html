@@ -41,7 +41,7 @@
 
           <div class="card">
             {% if message %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
@@ -55,18 +55,18 @@
               </div>
               <!-- <br> -->
               {% if is_membership_active %}
-                {% if member.membership.is_subscription != 'N' %}
-                  <h6 class="text-muted card-subtitle mb-2">
-                    Current Membership: {{ member.membership }}
-                  </h6>
-                  <h6 class="text-muted card-subtitle mb-2">
-                    Next Cycle Starts: {{ member.membership_expiration }}
-                  </h6>
-                {% else %}
-                <h6 class="text-muted card-subtitle mb-2">
-                  Expiration: {{ member.membership_expiration }}
-                </h6>
-                {% endif %}
+              {% if member.membership.is_subscription != 'N' %}
+              <h6 class="text-muted card-subtitle mb-2">
+                Current Membership: {{ member.membership }}
+              </h6>
+              <h6 class="text-muted card-subtitle mb-2">
+                Next Cycle Starts: {{ member.membership_expiration }}
+              </h6>
+              {% else %}
+              <h6 class="text-muted card-subtitle mb-2">
+                Expiration: {{ member.membership_expiration }}
+              </h6>
+              {% endif %}
               {% else %}
               <h6 class="text-muted card-subtitle mb-2">
                 No active membership
@@ -83,7 +83,7 @@
     </section>
     <div class="card shadow mb-3">
       <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Member Information</p>
+        <p class="text-primary m-0 font-weight-bold">Personal Information</p>
       </div>
       <div class="card-body">
         <form action="{% url 'update_member' %}" method="post">
@@ -125,11 +125,19 @@
         </form>
         <div><a href="{% url 'change_password' %}">Change
             Password</a></div>
-        {% if is_membership_active and member.membership.is_subscription != 'N' %}
-        <div><a href="{% url 'change_password' %}">Cancel Membership</a></div>
-        {% endif %}
       </div>
     </div>
+    {% if is_membership_active and member.membership.is_subscription != 'N' %}
+    <div class="card shadow mb-3">
+      <div class="card-header py-3">
+        <p class="text-primary m-0 font-weight-bold">Membership</p>
+      </div>
+      <div class="card-body">
+        <div><a href="#" id="update_payment">Update Payment Information</a></div>
+        <div><a href="#" id="cancel_subscription">Cancel Membership</a></div>
+      </div>
+    </div>
+    {% endif %}
   </main>
   <footer class="page-footer dark" style="padding: 0px;">
     <div class="footer-copyright">
@@ -140,6 +148,62 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
   <script src="{% static 'membership_management/js/script.min.js' %}"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    var stripe = Stripe('pk_test_KXcUhKDdisWZTPyW1eesLHLt00AkrzscYR');
+    var button = document.querySelectorAll('#update_payment').forEach((button) => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+        createSetupSessionAndRedirect(button.id);
+      });
+    });
+
+    
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function createSetupSessionAndRedirect(buttonId) {
+      //pass checkout info to server to create session
+      fetch('stripe_subscription_setup_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFTOKEN': csrftoken,
+          "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+        },
+        body: JSON.stringify({
+          amount: 100,
+        }),
+        credentials: 'same-origin',
+      })
+        .then((response) => response.json())
+        .then((session) => {
+          // redirect to checkout
+          stripe.redirectToCheckout({ sessionId: session.id })
+          console.log('success', data);
+        })
+        .catch((error) => {
+          window.location.href = "{% url 'account' %}"
+          // console.log('not logged in', error);
+        });
+    };
+
+  </script>
 </body>
 
 </html>

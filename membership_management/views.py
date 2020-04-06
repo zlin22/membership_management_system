@@ -17,6 +17,12 @@ stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
 
 # You can find your endpoint's secret in your webhook settings
 endpoint_secret = 'whsec_UEJPGZ2zsHTJJZFXnmix2kA3jzyeewIC'
+
+# checkout session success redirect URL
+SUCCESS_URL = 'http://127.0.0.1:8000/account/update_success'
+
+# checkout session cancel redirect URL
+CANCEL_URL = 'http://127.0.0.1:8000/membership'
 # END Stripe setup ##########
 
 
@@ -55,15 +61,35 @@ def membership_page(request):
 
 
 def account(request):
-    if request.method == "GET":
-        if not request.user.is_authenticated:
-            return render(request, "membership_management/login.html")
-        else:
-            try:
-                is_membership_active = (request.user.membership_expiration >= date.today())
-            except Exception:
-                is_membership_active = False
-            return render(request, "membership_management/account.html", {"member": request.user, "is_membership_active": is_membership_active})
+    if not request.user.is_authenticated:
+        return render(request, "membership_management/login.html")
+    else:
+        try:
+            is_membership_active = (
+                request.user.membership_expiration >= date.today())
+        except Exception:
+            is_membership_active = False
+
+        return render(request, "membership_management/account.html", {"member": request.user, "is_membership_active": is_membership_active})
+
+
+def account_update_success(request):
+    if not request.user.is_authenticated:
+        return render(request, "membership_management/login.html")
+    else:
+        try:
+            is_membership_active = (
+                request.user.membership_expiration >= date.today())
+        except Exception:
+            is_membership_active = False
+
+        context = {
+            "member": request.user, 
+            "is_membership_active": is_membership_active,
+            "message": "Your account is updated!"
+        }
+
+        return render(request, "membership_management/account.html", context)
 
 
 def login_view(request):
@@ -229,8 +255,8 @@ def stripe_create_session(request, membership_id):
                 'quantity': 1,
             }],
             client_reference_id=selected_membership.title,
-            success_url='https://membership-management-system.herokuapp.com/account?id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://membership-management-system.herokuapp.com/membership',
+            success_url=SUCCESS_URL,
+            cancel_url=CANCEL_URL,
             customer_email=request.user.email,
         )
 
@@ -254,8 +280,8 @@ def stripe_subscription_create_session(request, membership_id):
                     'plan': selected_membership.subscription_plan_id,
                 }],
             },
-            success_url='https://membership-management-system.herokuapp.com/account?id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://membership-management-system.herokuapp.com/membership',
+            success_url=SUCCESS_URL,
+            cancel_url=CANCEL_URL,
             client_reference_id=selected_membership.title,
             customer_email=request.user.email,
         )
@@ -273,7 +299,6 @@ def stripe_get_session(request):
     return JsonResponse(session)
 
 
-
 @csrf_exempt
 def stripe_webhooks(request):
     payload = request.body
@@ -284,18 +309,20 @@ def stripe_webhooks(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
         )
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
         return HttpResponse(status=400)
 
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        # print(session)
 
-        # Update payments table with 'paid'
+        # If webhook was from a payment purchase, update payments table with 'paid'
+        # and extend membership date
         try:
             payment = Payment.objects.get(payment_processor_id=session['id'])
             payment.status = 'paid'
@@ -316,14 +343,37 @@ def stripe_webhooks(request):
             else:
                 subscription_interval = session['display_items'][0]['plan']['interval']
                 if subscription_interval == 'month':
-                    member.membership_expiration = max([date.today(), member.membership_expiration]) + relativedelta(months=1)
+                    member.membership_expiration = max(
+                        [date.today(), member.membership_expiration]) + relativedelta(months=1)
 
                 member.stripe_subscription_id = session['subscription']
                 member.stripe_customer_id = session['customer']
                 member.save()
                 print('sub')
+
         except Exception:
-            print('no matching session from webhook')
+            print('no matching payment session from webhook')
+
+        # If webhook was from a credit card update, get setup_intent
+        try:
+            # get setup intent which contains customer, subscription_id, and payment_method
+            setup_intent = stripe.SetupIntent.retrieve(session['setup_intent'])
+            print(setup_intent)
+
+            # update customer's default payment method
+            customer = setup_intent['customer']
+            payment_method = setup_intent['payment_method']
+            stripe.Customer.modify(
+                customer,
+                invoice_settings={'default_payment_method': payment_method}
+            )
+
+            # # update subscription's default payment method. alternate methodology will not impact default payment method
+            # subscription_id = setup_intent['metadata']['subscription_id']
+            # stripe.Subscription.modify(subscription_id, default_payment_method=payment_method)
+
+        except Exception:
+            print('no setup intent')
 
     if event['type'] == 'customer.subscription.updated':
         print('sub updated')
@@ -331,12 +381,38 @@ def stripe_webhooks(request):
     return HttpResponse(status=200)
 
 
+# update customer's credit card
+def stripe_subscription_setup_session(request):
+    try:
+        subscription_id = request.user.stripe_subscription_id
+        print('request.user.stripe_subscription_id')
+        if subscription_id is None:
+            return HttpResponse(status=404)
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            mode='setup',
+            setup_intent_data={
+                'metadata': {
+                    'subscription_id': subscription_id,
+                },
+            },
+            success_url=SUCCESS_URL,
+            cancel_url=CANCEL_URL,
+            customer=request.user.stripe_customer_id,
+        )
+        return JsonResponse(session)
+
+    except Exception:
+        return HttpResponse(status=400)
+
+
 # to do:
 # cancel membership
-# update membership credit card
 # process membership renewal webhook
+# notify membership renewal failed payment
 # process membership billing cycle update webhook
-# buying memberships when member already have an active recurring membership
+# prevent buying memberships when member already have an active recurring membership
 # forgot password
 # email receipts for purchases
 # admin panel QOL
