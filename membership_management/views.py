@@ -9,20 +9,23 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import PasswordChangeForm
 import stripe
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 # START Stripe setup #############
 # Set your secret key. Remember to switch to your live secret key in production!
 # See your keys here: https://dashboard.stripe.com/account/apikeys
-stripe.api_key = 'sk_test_SWwTfJnmN1RP1IzSfABCb1Gb006CDUoL74'
+stripe.api_key = settings.STRIPE_API_KEY
 
 # You can find your endpoint's secret in your webhook settings
-endpoint_secret = 'whsec_UEJPGZ2zsHTJJZFXnmix2kA3jzyeewIC'
+endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
 
 # checkout session success redirect URL
-SUCCESS_URL = 'http://127.0.0.1:8000/account/update_success'
+SUCCESS_URL = settings.STRIPE_REDIRECT_URL_BASE + '/account/update_success'
 
 # checkout session cancel redirect URL
-CANCEL_URL = 'http://127.0.0.1:8000/membership'
+BUY_CANCEL_URL = settings.STRIPE_REDIRECT_URL_BASE + '/membership'
+UPDATE_CANCEL_URL = settings.STRIPE_REDIRECT_URL_BASE + '/account'
+
 # END Stripe setup ##########
 
 
@@ -256,7 +259,7 @@ def stripe_create_session(request, membership_id):
             }],
             client_reference_id=selected_membership.title,
             success_url=SUCCESS_URL,
-            cancel_url=CANCEL_URL,
+            cancel_url=BUY_CANCEL_URL,
             customer_email=request.user.email,
         )
 
@@ -281,7 +284,7 @@ def stripe_subscription_create_session(request, membership_id):
                 }],
             },
             success_url=SUCCESS_URL,
-            cancel_url=CANCEL_URL,
+            cancel_url=BUY_CANCEL_URL,
             client_reference_id=selected_membership.title,
             customer_email=request.user.email,
         )
@@ -398,7 +401,7 @@ def stripe_subscription_setup_session(request):
                 },
             },
             success_url=SUCCESS_URL,
-            cancel_url=CANCEL_URL,
+            cancel_url=UPDATE_CANCEL_URL,
             customer=request.user.stripe_customer_id,
         )
         return JsonResponse(session)
@@ -417,3 +420,4 @@ def stripe_subscription_setup_session(request):
 # email receipts for purchases
 # admin panel QOL
 # env variables setup
+# email reminders when membership expires?

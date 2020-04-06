@@ -126,5 +126,8 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'admin'
 LOGOUT_REDIRECT_URL = '/admin'
 
+STRIPE_API_KEY = os.environ['STRIPE_API_KEY']
+STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
+STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
 
 django_heroku.settings(locals())
