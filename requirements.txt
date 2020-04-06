@@ -1,4 +1,5 @@
 Django
+python-dotenv
 gunicorn
 django-heroku
 python-dateutil
