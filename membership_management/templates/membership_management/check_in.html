@@ -43,10 +43,10 @@
         {% if is_membership_active and message1 and message2 %}
         <div class="alert alert-success text-center" role="alert">
           {% if message1 %}
-          <h3>{{ message1 }}</h3>
+          <h3><strong>{{ message1 }}</strong></h3>
           {% endif %}
           {% if message2 %}
-          <h3><strong>{{ message2 }}</strong></h3>
+          <h3>{{ message2 }}</h3>
           {% endif %}
           {% if message3 %}
           <h3>{{ message3 }}</h3>
@@ -58,10 +58,10 @@
         {% elif not is_membership_active and message1 and message2 %}
         <div class="alert alert-danger text-center" role="alert">
           {% if message1 %}
-          <h3>{{ message1 }}</h3>
+          <h3><strong>{{ message1 }}</strong></h3>
           {% endif %}
           {% if message2 %}
-          <h3><strong>{{ message2 }}</strong></h3>
+          <h3>{{ message2 }}</h3>
           {% endif %}
           {% if message3 %}
           <h3>{{ message3 }}</h3>
@@ -76,7 +76,7 @@
           <h3>{{ message1 }}</h3>
           {% endif %}
           {% if message2 %}
-          <h3><strong>{{ message2 }}</strong></h3>
+          <h3>{{ message2 }}</h3>
           {% endif %}
           {% if message3 %}
           <h3>{{ message3 }}</h3>
