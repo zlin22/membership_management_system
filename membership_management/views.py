@@ -34,12 +34,14 @@ def check_in(request):
         try:
             email = request.POST["member_email"]
             member = get_user_model().objects.get(email__iexact=email)
+            is_membership_active = member.membership_expiration >= date.today()
 
             if (member.membership_expiration is not None) and (member.membership_expiration >= date.today()):
                 context = {
                     "message1": f"Welcome {member.first_name}!",
-                    "message2": f"Your currently have an active {member.membership}",
-                    "message3": f"It expires on {member.membership_expiration}"
+                    "message2": f"Your currently have an active membership",
+                    "message3": f"It expires on {member.membership_expiration}",
+                    "is_membership_active": is_membership_active,
                 }
             else:
                 context = {
@@ -47,6 +49,7 @@ def check_in(request):
                     "message2": f"Your membership is NOT ACTIVE",
                     "message3": f"Please buy a new membership to play",
                     "purchase_button": True,
+                    "is_membership_active": is_membership_active,
                 }
 
             CheckInLog.objects.create(member=member)
@@ -432,3 +435,4 @@ def stripe_subscription_setup_session(request):
 # process membership billing cycle update webhook
 # email receipts for purchases
 # email reminders when membership expires?
+# auto log out
