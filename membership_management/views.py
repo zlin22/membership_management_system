@@ -427,9 +427,8 @@ def stripe_subscription_setup_session(request):
 # process membership renewal webhook
 # notify membership renewal failed payment
 # process membership billing cycle update webhook
-# prevent buying memberships when member already have an active recurring membership
 # forgot password
 # email receipts for purchases
 # admin panel QOL
-# env variables setup
 # email reminders when membership expires?
+# django permissions
