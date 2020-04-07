@@ -61,12 +61,14 @@
               <div class="price">
                 <h4>${{ membership.price }}</h4>
               </div>
-              {% if is_membership_active and member.membership.is_subscription != 'N' %}
-              <a id="{{membership.id}}" class="buy btn btn-outline-primary btn-block">Thanks for being a member!</a>
-              {% if membership.is_subscription == "N" %}
-              <a id="{{membership.id}}" class="buy btn btn-outline-primary btn-block">Buy Now</a>
-              {% elif is_membership_active and member.membership.is_subscription != 'N' %}
+              {% if is_membership_active and member.membership.is_subscription == 'Y' %}
+              <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Thanks for subscribing!</a>
+              {% elif is_membership_active and membership.is_subscription == "Y"  %}
+              <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Contact us to subscribe!</a>
+              {% elif membership.is_subscription != 'N' %}
               <a id="{{membership.id}}" class="subscribe btn btn-outline-primary btn-block">Subscribe</a>
+              {% else %}
+              <a id="{{membership.id}}" class="buy btn btn-outline-primary btn-block">Buy Now</a>
               {% endif %}
             </div>
           </div>

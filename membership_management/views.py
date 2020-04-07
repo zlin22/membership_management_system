@@ -60,7 +60,19 @@ def check_in(request):
 
 def membership_page(request):
     memberships = Membership.objects.filter(is_displayed=True)
-    return render(request, "membership_management/membership_page.html", {"memberships": memberships})
+    try:
+        member = get_user_model().objects.get(email__iexact=request.user.email)
+        is_membership_active = request.user.membership_expiration >= date.today()
+    except Exception:
+        is_membership_active = False
+
+    context = {
+        "memberships": memberships,
+        "is_membership_active": is_membership_active,
+        "member": member,
+    }
+
+    return render(request, "membership_management/membership_page.html", context)
 
 
 def account(request):
