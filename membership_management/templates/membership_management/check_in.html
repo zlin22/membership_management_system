@@ -43,7 +43,7 @@
         {% if is_membership_active and message1 and message2 %}
         <div class="alert alert-success text-center" role="alert">
           {% if message1 %}
-          <h3><strong>{{ message1 }}</strong></h3>
+          <h3>Hi <strong>{{ message1 }}</strong></h3>
           {% endif %}
           {% if message2 %}
           <h3>{{ message2 }}</h3>
@@ -58,7 +58,7 @@
         {% elif not is_membership_active and message1 and message2 %}
         <div class="alert alert-danger text-center" role="alert">
           {% if message1 %}
-          <h3><strong>{{ message1 }}</strong></h3>
+          <h3>Hi <strong>{{ message1 }}</strong></h3>
           {% endif %}
           {% if message2 %}
           <h3>{{ message2 }}</h3>
@@ -101,7 +101,7 @@
       </div>
     </section>
   </main>
-  <footer class="page-footer dark" style="padding: 0px;">
+  <footer class="page-footer light" style="padding: 0px;">
     <div class="footer-copyright">
       <p>Membership Management System by Z Lin</p>
     </div>

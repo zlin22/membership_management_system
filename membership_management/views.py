@@ -38,14 +38,14 @@ def check_in(request):
 
             if (member.membership_expiration is not None) and (member.membership_expiration >= date.today()):
                 context = {
-                    "message1": f"Welcome {member.first_name} {member.last_name}!",
+                    "message1": f"{member.first_name} {member.last_name}!",
                     "message2": f"Your currently have an active membership",
                     "message3": f"It expires on {member.membership_expiration}",
                     "is_membership_active": is_membership_active,
                 }
             else:
                 context = {
-                    "message1": f"Welcome {member.first_name} {member.last_name}!",
+                    "message1": f"{member.first_name} {member.last_name}!",
                     "message2": f"Your membership is NOT ACTIVE",
                     "message3": f"Please buy a new membership to play",
                     "purchase_button": True,
@@ -56,7 +56,7 @@ def check_in(request):
             return render(request, "membership_management/check_in.html", context)
 
         except Exception:
-            return render(request, "membership_management/check_in.html", {"message1": "Invald email. Please try again."})
+            return render(request, "membership_management/check_in.html", {"message1": "No account found with that email. Please try again."})
 
     return render(request, "membership_management/check_in.html")
 
@@ -427,6 +427,9 @@ def stripe_subscription_setup_session(request):
     except Exception:
         return HttpResponse(status=400)
 
+
+def cancel_membership(request):
+    pass
 
 # to do:
 # cancel membership
