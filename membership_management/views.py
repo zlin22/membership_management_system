@@ -424,11 +424,10 @@ def stripe_subscription_setup_session(request):
 
 # to do:
 # cancel membership
+# forgot password
+# admin panel QOL
 # process membership renewal webhook
 # notify membership renewal failed payment
 # process membership billing cycle update webhook
-# forgot password
 # email receipts for purchases
-# admin panel QOL
 # email reminders when membership expires?
-# django permissions
