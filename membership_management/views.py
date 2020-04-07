@@ -65,6 +65,7 @@ def membership_page(request):
         is_membership_active = request.user.membership_expiration >= date.today()
     except Exception:
         is_membership_active = False
+        member = None
 
     context = {
         "memberships": memberships,
