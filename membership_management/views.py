@@ -33,7 +33,7 @@ def check_in(request):
     if request.method == "POST":
         try:
             email = request.POST["member_email"]
-            member = get_user_model().objects.get(email=email)
+            member = get_user_model().objects.get(email__iexact=email)
 
             if (member.membership_expiration is not None) and (member.membership_expiration >= date.today()):
                 context = {
