@@ -38,14 +38,14 @@ def check_in(request):
 
             if (member.membership_expiration is not None) and (member.membership_expiration >= date.today()):
                 context = {
-                    "message1": f"Welcome {member.first_name}!",
+                    "message1": f"Welcome {member.first_name} {member.last_name}!",
                     "message2": f"Your currently have an active membership",
                     "message3": f"It expires on {member.membership_expiration}",
                     "is_membership_active": is_membership_active,
                 }
             else:
                 context = {
-                    "message1": f"Welcome {member.first_name}!",
+                    "message1": f"Welcome {member.first_name} {member.last_name}!",
                     "message2": f"Your membership is NOT ACTIVE",
                     "message3": f"Please buy a new membership to play",
                     "purchase_button": True,
@@ -130,16 +130,18 @@ def logout_view(request):
 
 def update_member(request):
     if request.method == "POST" and request.user.is_authenticated:
-        member = get_user_model().objects.get(email=request.user.email)
+        member = get_user_model().objects.get(email__iexact=request.user.email)
+        
+        # return render(request, "membership_management/account.html", {"member": member, "message": "Information updated"})
 
         try:
             email = request.POST["email"]
-            first_name = request.POST["first_name"]
-            last_name = request.POST["last_name"]
+            # first_name = request.POST["first_name"]
+            # last_name = request.POST["last_name"]
             phone_number = request.POST["phone_number"]
             member.email = email
-            member.first_name = first_name
-            member.last_name = last_name
+            # member.first_name = first_name
+            # member.last_name = last_name
             member.phone_number = phone_number
             member.save()
             return render(request, "membership_management/account.html", {"member": member, "message": "Information updated"})
