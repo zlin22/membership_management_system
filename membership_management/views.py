@@ -153,7 +153,7 @@ def logout_view(request):
 def update_member(request):
     if request.method == "POST" and request.user.is_authenticated:
         member = get_user_model().objects.get(email__iexact=request.user.email)
-        
+
         # return render(request, "membership_management/account.html", {"member": member, "message": "Information updated"})
 
         try:
@@ -450,6 +450,7 @@ def stripe_subscription_setup_session(request):
         return HttpResponse(status=400)
 
 
+# cancel membership
 def cancel_membership(request):
     try:
         stripe.Subscription.delete(request.user.stripe_subscription_id)
@@ -462,9 +463,7 @@ def cancel_membership(request):
         return HttpResponseRedirect(reverse("account_update_fail"))
 
 
-
 # to do:
-# cancel membership
 # forgot password
 # admin panel QOL
 # process membership renewal webhook
