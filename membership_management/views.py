@@ -114,6 +114,25 @@ def account_update_success(request):
         return render(request, "membership_management/account.html", context)
 
 
+def account_update_fail(request):
+    if not request.user.is_authenticated:
+        return render(request, "membership_management/login.html")
+    else:
+        try:
+            is_membership_active = (
+                request.user.membership_expiration >= date.today())
+        except Exception:
+            is_membership_active = False
+
+        context = {
+            "member": request.user,
+            "is_membership_active": is_membership_active,
+            "message": "Your account could not be updated."
+        }
+
+        return render(request, "membership_management/account.html", context)
+
+
 def login_view(request):
     email = request.POST.get("email")
     password = request.POST.get("password")
@@ -432,7 +451,17 @@ def stripe_subscription_setup_session(request):
 
 
 def cancel_membership(request):
-    pass
+    try:
+        stripe.Subscription.delete(request.user.stripe_subscription_id)
+        member = get_user_model().objects.get(email__iexact=request.user.email)
+        member.membership = None
+        member.membership_expiration = date.today() + timedelta(days=-1)
+        member.save()
+        return HttpResponseRedirect(reverse("account_update_success"))
+    except Exception:
+        return HttpResponseRedirect(reverse("account_update_fail"))
+
+
 
 # to do:
 # cancel membership
