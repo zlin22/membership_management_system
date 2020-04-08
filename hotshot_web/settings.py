@@ -16,18 +16,24 @@ import django_heroku
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# environment variables set here
+STRIPE_API_KEY = os.environ['STRIPE_API_KEY']
+STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
+STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
+ALLOWED_HOST1 = os.environ['ALLOWED_HOST1']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!77fo6az(ok-ugqf7=dy54c=$cyda#v=4hoh02!o@3ga*svt-v'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ALLOWED_HOST1, ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 # Application definition
 
@@ -126,8 +132,7 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'admin'
 LOGOUT_REDIRECT_URL = '/admin'
 
-STRIPE_API_KEY = os.environ['STRIPE_API_KEY']
-STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
-STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 django_heroku.settings(locals())
