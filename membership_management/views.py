@@ -34,9 +34,12 @@ def check_in(request):
         try:
             email = request.POST["member_email"]
             member = get_user_model().objects.get(email__iexact=email)
-            is_membership_active = member.membership_expiration >= date.today()
+            try:
+                is_membership_active = member.membership_expiration >= date.today()
+            except Exception:
+                is_membership_active = False
 
-            if (member.membership_expiration is not None) and (member.membership_expiration >= date.today()):
+            if is_membership_active:
                 context = {
                     "message1": f"{member.first_name} {member.last_name}!",
                     "message2": f"Your currently have an active membership",
@@ -441,3 +444,4 @@ def cancel_membership(request):
 # email receipts for purchases
 # email reminders when membership expires?
 # auto log out
+# export payments to excel
