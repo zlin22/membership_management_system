@@ -33,10 +33,13 @@ DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
 ALLOWED_HOSTS = [ALLOWED_HOST1, ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
+SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 # Application definition
-
 INSTALLED_APPS = [
     'membership_management.apps.MembershipManagementConfig',
     'django.contrib.admin',
@@ -131,8 +134,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'admin'
 LOGOUT_REDIRECT_URL = '/admin'
-
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 django_heroku.settings(locals())
