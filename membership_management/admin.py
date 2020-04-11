@@ -15,7 +15,7 @@ class MemberAdmin(UserAdmin):
     list_filter = ('is_staff',)
     # exclude = ('username',)
     fieldsets = (
-        (None, {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'membership',
+        (None, {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'profile_pic', 'membership',
                            'membership_expiration', 'stripe_subscription_id', 'stripe_customer_id',
                            'override_recurring_cycle_starts_on', 'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),

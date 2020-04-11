@@ -26,18 +26,52 @@ ALLOWED_HOST1 = os.environ['ALLOWED_HOST1']
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
-ALLOWED_HOSTS = [ALLOWED_HOST1, ]
+ALLOWED_HOSTS = [ALLOWED_HOST1, '127.0.0.1', ]
 
 CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+AWS_DEFAULT_ACL = None
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+# change to your region to get v4 signature authentication for private storage
+AWS_S3_REGION_NAME = 'us-east-2'
+
+# s3 static settings
+STATIC_LOCATION = 'static'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+STATICFILES_STORAGE = 'hotshot_web.storage_backends.StaticStorage'
+# s3 public media settings
+PUBLIC_MEDIA_LOCATION = 'media'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
+# s3 private media settings
+PRIVATE_MEDIA_LOCATION = 'private'
+PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
+
+# # AWS_S3_REGION_NAME = 'us-east-2'
+# AWS_LOCATION = 'static'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'  # <-- here is where we reference it
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'membership_management/static'),
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -48,6 +82,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'storages'
 ]
 
 AUTH_USER_MODEL = 'membership_management.Member'
@@ -130,9 +166,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
 LOGIN_REDIRECT_URL = 'admin'
 LOGOUT_REDIRECT_URL = '/admin'
 
-django_heroku.settings(locals())
+if (os.environ['ENVIRONMENT'] != 'test'):
+    django_heroku.settings(locals())

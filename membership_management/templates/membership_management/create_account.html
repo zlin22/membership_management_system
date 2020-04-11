@@ -48,23 +48,23 @@
           {% for field in form %}
           <div class="form-group">
             {% if 'password' not in field.html_name %}
-            <label>{{ field.label_tag }}</label><br />
-            <input class="form-control item" name="{{ field.html_name }}" />
-            {% if field.help_text %}
-            <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-            <p style="color: red">{{ error }}</p>
-            {% endfor %}
+              <label>{{ field.label_tag }}</label><br />
+              <input class="form-control item" name="{{ field.html_name }}" />
+              {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
             {% else %}
-            <label>{{ field.label_tag }}</label><br />
-            <input class="form-control item" type="password" name="{{ field.html_name }}" />
-            {% if field.help_text %}
-            <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-            <p style="color: red">{{ error }}</p>
-            {% endfor %}
+              <label>{{ field.label_tag }}</label><br />
+              <input class="form-control item" type="password" name="{{ field.html_name }}" />
+              {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
             {% endif %}
           </div>
           {% endfor %}

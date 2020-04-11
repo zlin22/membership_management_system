@@ -4,3 +4,6 @@ gunicorn
 django-heroku
 python-dateutil
 stripe
+Pillow
+boto3
+django-storages

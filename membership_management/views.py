@@ -45,6 +45,7 @@ def check_in(request):
                     "message2": f"Your currently have an active membership",
                     "message3": f"It expires on {member.membership_expiration}",
                     "is_membership_active": is_membership_active,
+                    "member": member,
                 }
             else:
                 context = {
@@ -53,6 +54,7 @@ def check_in(request):
                     "message3": f"Please buy a new membership to play",
                     "purchase_button": True,
                     "is_membership_active": is_membership_active,
+                    "member": member,
                 }
 
             CheckInLog.objects.create(member=member)
@@ -464,7 +466,9 @@ def cancel_membership(request):
 
 
 # to do:
-# forgot password
+# forgot password - email server
+# family account
+# profile pic
 # admin panel QOL
 # process membership renewal webhook
 # notify membership renewal failed payment

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
-
+from hotshot_web.storage_backends import PrivateMediaStorage  # PublicMediaStorage can also be used
 from .managers import CustomUserManager
 
 # Create your models here.
@@ -42,6 +42,7 @@ class Member(AbstractUser):
     override_recurring_cycle_starts_on = models.DateField(blank=True, null=True, verbose_name="Override recurring cycle start date (ONLY for recurring memberships)")
     stripe_subscription_id = models.CharField(max_length=500, blank=True, null=True)
     stripe_customer_id = models.CharField(max_length=500, blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
