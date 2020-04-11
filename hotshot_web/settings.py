@@ -36,8 +36,19 @@ ALLOWED_HOSTS = [ALLOWED_HOST1, '127.0.0.1', ]
 CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+USE_EMAIL = True
+
+# Mailgun email config
+if USE_EMAIL:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.mailgun.org'
+    EMAIL_HOST_USER = os.environ['MAILGUN_SMTP_LOGIN']
+    EMAIL_HOST_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -61,12 +72,7 @@ DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
 # s3 private media settings
 PRIVATE_MEDIA_LOCATION = 'private'
 PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
-
-# # AWS_S3_REGION_NAME = 'us-east-2'
-# AWS_LOCATION = 'static'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-
+# AWS_S3_REGION_NAME = 'us-east-2'
 DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'  # <-- here is where we reference it
 
 STATICFILES_DIRS = [
