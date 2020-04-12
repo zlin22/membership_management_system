@@ -4,10 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from hotshot_web.storage_backends import PrivateMediaStorage  # PublicMediaStorage can also be used
 from .managers import CustomUserManager
+from django.utils.timezone import localtime
+
 
 # Create your models here.
-
-
 class Membership(models.Model):
     IS_SUBSCRIPTION_CHOICES = [
         ('Y', 'Yes'),
@@ -72,7 +72,7 @@ class CheckInLog(models.Model):
     checked_in_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.email} check in at {self.checked_in_at}"
+        return f"{self.first_name} {self.last_name} ({self.email}) checked in at {localtime(self.checked_in_at).strftime('%Y-%m-%d %I:%M:%S %p')}"
 
 
 class Payment(models.Model):
