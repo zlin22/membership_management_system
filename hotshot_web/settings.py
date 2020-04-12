@@ -41,10 +41,12 @@ USE_EMAIL = True
 # Mailgun email config
 if USE_EMAIL:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.mailgun.org'
+    EMAIL_HOST = os.environ['MAILGUN_SMTP_SERVER']
+    # EMAIL_HOST_USER = '9482d9e4-801d-4ce2-a6bb-233058212619'
+    # EMAIL_HOST_PASSWORD = '9482d9e4-801d-4ce2-a6bb-233058212619'
     EMAIL_HOST_USER = os.environ['MAILGUN_SMTP_LOGIN']
     EMAIL_HOST_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
-    EMAIL_PORT = 587
+    EMAIL_PORT = os.environ['MAILGUN_SMTP_PORT']
     EMAIL_USE_TLS = True
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

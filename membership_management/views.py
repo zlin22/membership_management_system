@@ -397,9 +397,8 @@ def cancel_membership(request):
 # process membership renewal webhook
 # process membership billing cycle update webhook
 # family account
-# admin panel QOL
+# admin panel QOL - export payments to csv, add filters to payments
 # notify membership renewal failed payment
 # email receipts for purchases
 # email reminders when membership expires?
 # auto log out
-# export payments to excel
