@@ -237,80 +237,6 @@ def create_account(request):
         return render(request, 'membership_management/create_account.html', {'form': MemberCreationForm()})
 
 
-# def subscribe(request, membership_id):
-#     try:
-#         selected_membership = Membership.objects.get(pk=membership_id)
-#         context = {"membership": selected_membership}
-#     except:
-#         return HttpResponseRedirect(reverse("membership_page"))
-
-#     if not request.user.is_authenticated:
-#         return render(request, "membership_management/login.html")
-
-#     context.update({"member": request.user})
-
-#     if request.method == "POST":
-#         # Create an instance of the API Client
-#         # and initialize it with the credentials
-#         # for the Square account whose assets you want to manage
-
-#         client = Client(
-#             access_token='EAAAEDjhGlYSsPaPl8t01AzkGgY9nKZoI-z8vuqX8oSHXsQJ4O7qK6jGC2LudLpg',
-#             environment='sandbox',
-#         )
-
-#         # Get an instance of the Square API you want call
-#         payments_api = client.payments
-
-#         # Call list_locations method to get all locations in this Square account
-#         # result = api_locations.list_locations()
-
-#         cents_charged = int(selected_membership.price * 100)
-#         nonce = request.POST["nonce"]
-
-#         body = {
-#             "source_id": nonce,
-#             "idempotency_key": str(uuid.uuid1()),
-#             "amount_money": {"amount": cents_charged, "currency": "USD"}
-#         }
-
-#         payment_results = payments_api.create_payment(body)
-
-#         # Call the success method to see if the call succeeded
-#         if payment_results.is_success():
-#             # The body property is a list of locations
-#             response = payment_results.body['payment']
-#             # Iterate over the list
-#             # print(context)
-
-#             # update the member's membership
-
-#             order_pk = {
-#                 "order_message": "Your order has been placed!",
-#                 # "grand_total": current_order.grand_total,
-#                 # "order_pk": current_order.id,
-#             }
-
-#             response.update(order_pk)
-
-#             return JsonResponse(response)
-
-#         # Call the error method to see if the call failed
-#         elif payment_results.is_error():
-#             print('Error calling payment API')
-#             context = payment_results.errors
-#             errors = payment_results.errors
-#             # An error is returned as a list of errors
-#             # for error in errors:
-#             #     # Each error is represented as a dictionary
-#             #     for key, value in error.items():
-#             #         print(f"{key} : {value}")
-#             #     print("\n")
-#             print(errors)
-
-#     return render(request, "membership_management/subscribe.html", context)
-
-
 def stripe_create_session(request, membership_id):
     if request.method == "POST":
         try:
@@ -496,12 +422,13 @@ def cancel_membership(request):
 
 
 # to do:
-# forgot password - email server
-# family account
-# admin panel QOL
 # process membership renewal webhook
-# notify membership renewal failed payment
 # process membership billing cycle update webhook
+# forgot password - email server
+# admin panel QOL - filter payment status
+
+# optional
+# notify membership renewal failed payment
 # email receipts for purchases
 # email reminders when membership expires?
 # auto log out
