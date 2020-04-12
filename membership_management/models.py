@@ -39,7 +39,6 @@ class Member(AbstractUser):
     phone_number = models.CharField(max_length=16, blank=True)
     membership = models.ForeignKey(Membership, on_delete=models.PROTECT, related_name="members", null=True, blank=True)
     membership_expiration = models.DateField(null=True, blank=True)
-    override_recurring_cycle_starts_on = models.DateField(blank=True, null=True, verbose_name="Override recurring cycle start date (ONLY for recurring memberships)")
     stripe_subscription_id = models.CharField(max_length=500, blank=True, null=True)
     stripe_customer_id = models.CharField(max_length=500, blank=True, null=True)
     profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
@@ -53,12 +52,27 @@ class Member(AbstractUser):
         return self.email
 
 
+class AuxiliaryMember(models.Model):
+    primary_member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="auxiliary_members")
+    email = models.EmailField(_('Email address'), unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=16, blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
+
+    def __str__(self):
+        return self.email
+
+
 class CheckInLog(models.Model):
-    member = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name="check_in_logs")
+    email = models.EmailField(_('Email address'), null=True)
+    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True)
+    phone_number = models.CharField(max_length=16, blank=True)
     checked_in_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.member} check in at {self.checked_in_at}"
+        return f"{self.email} check in at {self.checked_in_at}"
 
 
 class Payment(models.Model):
