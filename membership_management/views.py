@@ -3,13 +3,14 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth import get_user_model, authenticate, login, logout, update_session_auth_hash
 from .forms import MemberCreationForm
-from .models import Membership, Member, CheckInLog, Payment
+from .models import Membership, Member, CheckInLog, Payment, AuxiliaryMember
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.forms import PasswordChangeForm
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+
 
 # START Stripe setup #############
 # Set your secret key. Remember to switch to your live secret key in production!
@@ -30,40 +31,69 @@ UPDATE_CANCEL_URL = settings.STRIPE_REDIRECT_URL_BASE + '/account'
 
 
 def check_in(request):
+    # if request is POST try to find the member information
     if request.method == "POST":
+        email = request.POST["member_email"]
+
+        # try to get email from submission; if fail, return no account found
+        # first check if email belongs to primary user; set to member if found
         try:
-            email = request.POST["member_email"]
-            member = get_user_model().objects.get(email__iexact=email)
+            member = get_user_model().objects.get(
+                email__iexact=email
+            )
+
+        except Exception:
+            # check if email belongs to auxiliary member; set to member if found
             try:
-                is_membership_active = member.membership_expiration >= date.today()
+                member = AuxiliaryMember.objects.get(
+                    email__iexact=email
+                )
+
+            except Exception:
+                context = {
+                    "message2": "No account found with that email. Please try again.",
+                    "alert_type": "alert-warning",
+                }
+                return render(request, "membership_management/check_in.html", context)
+
+        # try to get is_membership_active status; if not able, set is_membership_active to false
+        try:
+            is_membership_active = member.membership_expiration >= date.today()
+            membership_expiration = member.membership_expiration
+        except Exception:
+            try:
+                is_membership_active = member.primary_member.membership_expiration >= date.today()
+                membership_expiration = member.primary_member.membership_expiration
             except Exception:
                 is_membership_active = False
 
-            if is_membership_active:
-                context = {
-                    "message1": f"{member.first_name} {member.last_name}!",
-                    "message2": f"Your currently have an active membership",
-                    "message3": f"It expires on {member.membership_expiration}",
-                    "is_membership_active": is_membership_active,
-                    "member": member,
-                }
-            else:
-                context = {
-                    "message1": f"{member.first_name} {member.last_name}!",
-                    "message2": f"Your membership is NOT ACTIVE",
-                    "message3": f"Please buy a new membership to play",
-                    "purchase_button": True,
-                    "is_membership_active": is_membership_active,
-                    "member": member,
-                }
+        if is_membership_active:
+            context = {
+                "message1": f"{member.first_name} {member.last_name}!",
+                "message2": f"Your currently have an active membership",
+                "message3": f"It expires on {membership_expiration}",
+                "profile_pic": member.profile_pic,
+                "alert_type": "alert-success",
+            }
+        else:
+            context = {
+                "message1": f"{member.first_name} {member.last_name}!",
+                "message2": f"Your membership is NOT ACTIVE",
+                "message3": f"Please buy a new membership to play",
+                "purchase_button": True,
+                "profile_pic": member.profile_pic,
+                "alert_type": "alert-danger",
+            }
 
-            CheckInLog.objects.create(member=member)
-            return render(request, "membership_management/check_in.html", context)
+        CheckInLog.objects.create(
+            email=member.email, first_name=member.first_name, 
+            last_name=member.last_name, phone_number=member.phone_number
+        )
+        return render(request, "membership_management/check_in.html", context)
 
-        except Exception:
-            return render(request, "membership_management/check_in.html", {"message1": "No account found with that email. Please try again."})
-
-    return render(request, "membership_management/check_in.html")
+    # if request is GET display check in form
+    else:
+        return render(request, "membership_management/check_in.html")
 
 
 def membership_page(request):
@@ -468,7 +498,6 @@ def cancel_membership(request):
 # to do:
 # forgot password - email server
 # family account
-# profile pic
 # admin panel QOL
 # process membership renewal webhook
 # notify membership renewal failed payment

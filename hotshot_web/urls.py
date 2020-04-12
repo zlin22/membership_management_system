@@ -24,6 +24,6 @@ urlpatterns = [
     # path('users/', include('django.contrib.auth.urls')),
 ]
 
-admin.site.site_header = "Hot Shot Admin"
+admin.site.site_header = "Hot Shot Admin | For system support please email contact@zlin22.me"
 admin.site.site_title = "Hot Shot Admin"
 admin.site.index_title = "Welcome to Hot Shot Admin"
