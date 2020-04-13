@@ -124,7 +124,12 @@ def account(request):
         except Exception:
             is_membership_active = False
 
-        return render(request, "membership_management/account.html", {"member": request.user, "is_membership_active": is_membership_active})
+    context = {
+        "member": request.user,
+        "is_membership_active": is_membership_active,
+    }
+
+    return render(request, "membership_management/account.html", context)
 
 
 def account_update_success(request):
@@ -547,7 +552,6 @@ def stripe_webhooks(request):
 # to do:
 # forgot password - email server
 # admin panel QOL - filter payment status
-# family account front end display in account page
 
 # optional
 # notify membership renewal failed payment

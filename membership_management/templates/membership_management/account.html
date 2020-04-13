@@ -55,24 +55,24 @@
               </div>
               <!-- <br> -->
               {% if is_membership_active %}
-              {% if member.membership.is_subscription != 'N' %}
-              <h6 class="text-muted card-subtitle mb-2">
-                Current Membership: {{ member.membership }}
-              </h6>
-              <h6 class="text-muted card-subtitle mb-2">
-                Current Cycle Ends: {{ member.membership_expiration }}
-              </h6>
+                {% if member.membership.is_subscription != 'N' %}
+                  <h6 class="text-muted card-subtitle mb-2">
+                    Current Membership: {{ member.membership }}
+                  </h6>
+                  <h6 class="text-muted card-subtitle mb-2">
+                    Current Cycle Ends: {{ member.membership_expiration }}
+                  </h6>
+                {% else %}
+                  <h6 class="text-muted card-subtitle mb-2">
+                    Expiration: {{ member.membership_expiration }}
+                  </h6>
+                {% endif %}
               {% else %}
-              <h6 class="text-muted card-subtitle mb-2">
-                Expiration: {{ member.membership_expiration }}
-              </h6>
-              {% endif %}
-              {% else %}
-              <h6 class="text-muted card-subtitle mb-2">
-                No active membership
-              </h6>
-              <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
-                Membership</a>
+                <h6 class="text-muted card-subtitle mb-2">
+                  No active membership
+                </h6>
+                <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
+                  Membership</a>
               {% endif %}
 
               <a class="btn btn-primary" role="button" style="margin: 0 10px;" href="{% url 'logout' %}">Log Out</a>
@@ -83,7 +83,7 @@
     </section>
     <div class="card shadow mb-3">
       <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Personal Information</p>
+        <p class="text-primary m-0 font-weight-bold">Account Information</p>
       </div>
       <div class="card-body">
         <form action="{% url 'update_member' %}" method="post">
@@ -116,7 +116,7 @@
     {% if is_membership_active and member.membership.is_subscription != 'N' %}
     <div class="card shadow mb-3">
       <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Membership</p>
+        <p class="text-primary m-0 font-weight-bold">Membership Information</p>
       </div>
       <div class="card-body">
         <div><a href="#" id="update_payment">Update Payment Information</a></div>
@@ -152,6 +152,22 @@
       </div>
     </div>
     {% endif %}
+
+    {% if member.auxiliary_members is not None %}
+    {% for aux_mem in member.auxiliary_members.all %}
+    <div class="card shadow mb-3">
+      <div class="card-header py-3">
+        <p class="text-primary m-0 font-weight-bold">Auxiliary Member {{ forloop.counter }}</p>
+      </div>
+      <div class="card-body">
+        <div>Name: {{aux_mem.first_name}} {{aux_mem.last_name}}</div>
+        <div>Phone: {{aux_mem.phone_number}}</div>
+        <div>Email: {{aux_mem.email}}</div>        
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
   </main>
   <footer class="page-footer light" style="padding: 0px;">
     <div class="footer-copyright">
