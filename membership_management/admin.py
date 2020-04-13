@@ -35,7 +35,7 @@ class MemberAdmin(UserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('first_name', )
-    readonly_fields = ('stripe_subscription_id', 'stripe_customer_id')
+    readonly_fields = ('stripe_subscription_id', )
 
 
 class PaymentAdmin(admin.ModelAdmin):

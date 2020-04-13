@@ -39,8 +39,8 @@ class Member(AbstractUser):
     phone_number = models.CharField(max_length=16, blank=True)
     membership = models.ForeignKey(Membership, on_delete=models.PROTECT, related_name="members", null=True, blank=True)
     membership_expiration = models.DateField(null=True, blank=True)
-    stripe_subscription_id = models.CharField(max_length=500, blank=True, null=True)
-    stripe_customer_id = models.CharField(max_length=500, blank=True, null=True)
+    stripe_subscription_id = models.CharField(max_length=500, blank=True, null=True,)
+    stripe_customer_id = models.CharField(max_length=500, blank=True, null=True, verbose_name="[DO NOT EDIT UNLESS INSTRUCTED] Stripe customer ID")
     profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
 
     USERNAME_FIELD = 'email'
