@@ -237,6 +237,7 @@ def create_account(request):
         return render(request, 'membership_management/create_account.html', {'form': MemberCreationForm()})
 
 
+# create stripe session for buying a one time item
 def stripe_create_session(request, membership_id):
     if request.method == "POST":
         try:
@@ -244,22 +245,42 @@ def stripe_create_session(request, membership_id):
         except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'name': selected_membership.title,
-                'description': selected_membership.description,
-                'images': ['https://images.squarespace-cdn.com/content/v1/592715679de4bb56b6f52dc3/1575487314377-8ILD99MIL70XF02VY8V6/ke17ZwdGBToddI8pDm48kBD2FKG2VYgv9vJ-sxRHyeVZw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7eYzOKsynbf6SIIjIVpddg9XuI9fW4HahfJRw8_j4CZzf8pmB28R7ZtB-Q9IQS1W4w/favicon.ico'],
-                # json.loads(request.body)['amount'],
-                'amount': int(selected_membership.price * 100),
-                'currency': 'usd',
-                'quantity': 1,
-            }],
-            client_reference_id=selected_membership.title,
-            success_url=SUCCESS_URL,
-            cancel_url=BUY_CANCEL_URL,
-            customer_email=request.user.email,
-        )
+        # if the customer has a stripe customer id, include it in request
+        if request.user.stripe_customer_id is None:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'name': selected_membership.title,
+                    'description': selected_membership.description,
+                    'images': ['https://images.squarespace-cdn.com/content/v1/592715679de4bb56b6f52dc3/1575487314377-8ILD99MIL70XF02VY8V6/ke17ZwdGBToddI8pDm48kBD2FKG2VYgv9vJ-sxRHyeVZw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7eYzOKsynbf6SIIjIVpddg9XuI9fW4HahfJRw8_j4CZzf8pmB28R7ZtB-Q9IQS1W4w/favicon.ico'],
+                    # json.loads(request.body)['amount'],
+                    'amount': int(selected_membership.price * 100),
+                    'currency': 'usd',
+                    'quantity': 1,
+                }],
+                client_reference_id=selected_membership.title,
+                success_url=SUCCESS_URL,
+                cancel_url=BUY_CANCEL_URL,
+                customer_email=request.user.email,
+            )
+
+        else:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'name': selected_membership.title,
+                    'description': selected_membership.description,
+                    'images': ['https://images.squarespace-cdn.com/content/v1/592715679de4bb56b6f52dc3/1575487314377-8ILD99MIL70XF02VY8V6/ke17ZwdGBToddI8pDm48kBD2FKG2VYgv9vJ-sxRHyeVZw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7eYzOKsynbf6SIIjIVpddg9XuI9fW4HahfJRw8_j4CZzf8pmB28R7ZtB-Q9IQS1W4w/favicon.ico'],
+                    # json.loads(request.body)['amount'],
+                    'amount': int(selected_membership.price * 100),
+                    'currency': 'usd',
+                    'quantity': 1,
+                }],
+                client_reference_id=selected_membership.title,
+                success_url=SUCCESS_URL,
+                cancel_url=BUY_CANCEL_URL,
+                customer=request.user.stripe_customer_id,
+            )
 
         Payment.objects.create(member=request.user, membership=selected_membership,
                                amount=selected_membership.price, payment_processor_id=session['id'], status='pending')
@@ -267,6 +288,7 @@ def stripe_create_session(request, membership_id):
         return JsonResponse(session)
 
 
+# create stripe session for buying a subscription
 def stripe_subscription_create_session(request, membership_id):
     if request.method == "POST":
         try:
@@ -274,18 +296,34 @@ def stripe_subscription_create_session(request, membership_id):
         except Exception:
             return HttpResponseRedirect(reverse("membership_page"))
 
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            subscription_data={
-                'items': [{
-                    'plan': selected_membership.subscription_plan_id,
-                }],
-            },
-            success_url=SUCCESS_URL,
-            cancel_url=BUY_CANCEL_URL,
-            client_reference_id=selected_membership.title,
-            customer_email=request.user.email,
-        )
+        # if the customer has a stripe customer id, include it in request
+        if request.user.stripe_customer_id is None:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                subscription_data={
+                    'items': [{
+                        'plan': selected_membership.subscription_plan_id,
+                    }],
+                },
+                success_url=SUCCESS_URL,
+                cancel_url=BUY_CANCEL_URL,
+                client_reference_id=selected_membership.title,
+                customer_email=request.user.email,
+            )
+
+        else:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                subscription_data={
+                    'items': [{
+                        'plan': selected_membership.subscription_plan_id,
+                    }],
+                },
+                success_url=SUCCESS_URL,
+                cancel_url=BUY_CANCEL_URL,
+                client_reference_id=selected_membership.title,
+                customer=request.user.stripe_customer_id,
+            )
 
         Payment.objects.create(member=request.user, membership=selected_membership,
                                amount=selected_membership.price, payment_processor_id=session['id'], status='pending')
@@ -304,7 +342,6 @@ def stripe_get_session(request):
 def stripe_subscription_setup_session(request):
     try:
         subscription_id = request.user.stripe_subscription_id
-        print('request.user.stripe_subscription_id')
         if subscription_id is None:
             return HttpResponse(status=404)
 
@@ -364,23 +401,26 @@ def stripe_webhooks(request):
         # If webhook was from a payment purchase, update payments table with 'paid'
         # and extend membership date
         try:
+            # update payment table with status = paid
             payment = Payment.objects.get(payment_processor_id=event_info['id'])
             payment.status = 'paid'
             payment.save()
-            print('updated membership payment table')
 
+            # update membership with the membership that is paid
             member = Member.objects.get(payments=payment.id)
             member.membership = payment.membership
 
             if member.membership_expiration is None:
                 member.membership_expiration = date.today() + timedelta(days=-1)
 
-            # if the payment was for a one-time purchase update expiration date
+            # if the payment was for a one-time purchase, save stripe customer id, and update membership exp date
             if event_info['subscription'] is None:
+                member.stripe_customer_id = event_info['customer']
+                member.save()
+
                 member.membership_expiration = max([date.today(
                 ) + timedelta(days=-1), member.membership_expiration]) + timedelta(days=(payment.membership.number_of_days_valid))
                 member.save()
-                print('no sub')
 
             # if the payment was for a subscription, store stripe subscription id, customer id
             # and calculate expiration date
@@ -393,7 +433,6 @@ def stripe_webhooks(request):
                 member.stripe_subscription_id = event_info['subscription']
                 member.stripe_customer_id = event_info['customer']
                 member.save()
-                print('sub')
 
         except Exception:
             print('no matching payment session from webhook')
@@ -402,7 +441,6 @@ def stripe_webhooks(request):
         try:
             # get setup intent which contains customer, subscription_id, and payment_method
             setup_intent = stripe.SetupIntent.retrieve(event_info['setup_intent'])
-            print(setup_intent)
 
             # update customer's default payment method
             customer = setup_intent['customer']
@@ -460,12 +498,16 @@ def stripe_webhooks(request):
             stripe_subscription_id = event_info['id']
             membership_expiration = datetime.fromtimestamp(event_info['current_period_end'])
             subscription_plan_id = event_info['plan']['id']
+            cancel_at_date = event_info['cancel_at']
 
             # update member info
             member = get_user_model().objects.get(stripe_customer_id=stripe_customer_id)
             member.stripe_subscription_id = stripe_subscription_id
             member.membership_expiration = membership_expiration
-            membership = Membership.objects.get(subscription_plan_id=subscription_plan_id)
+            if cancel_at_date is None:
+                membership = Membership.objects.get(subscription_plan_id=subscription_plan_id)
+            else:
+                membership = None
             member.membership = membership
             member.save()
             print('subscription updated')
@@ -473,12 +515,39 @@ def stripe_webhooks(request):
         except Exception:
             print('could not update subcription')
 
+    # process customer.subscription.deleted webhook
+    # triggers when subscription is canceled on stripe
+    # update membership plan, membership expiration date, subscription id
+    if event['type'] == 'customer.subscription.deleted':
+        event_info = event['data']['object']
+
+        # try to get member from webhook customer id
+        try:
+            # exctract data from webhook
+            stripe_customer_id = event_info['customer']
+            cancel_at_period_end = event_info['cancel_at_period_end']
+            if cancel_at_period_end is True:
+                membership_expiration = datetime.fromtimestamp(event_info['current_period_end'])
+            else:
+                membership_expiration = date.today() + timedelta(days=-1)
+
+            # update member info
+            member = get_user_model().objects.get(stripe_customer_id=stripe_customer_id)
+            member.stripe_subscription_id = None
+            member.membership_expiration = membership_expiration
+            member.membership = None
+            member.save()
+
+        except Exception:
+            print('could not cancel subcription')
+
     return HttpResponse(status=200)
 
 
 # to do:
 # forgot password - email server
 # admin panel QOL - filter payment status
+# family account front end display in account page
 
 # optional
 # notify membership renewal failed payment
