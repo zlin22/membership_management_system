@@ -419,19 +419,15 @@ def stripe_webhooks(request):
         except Exception:
             print('no setup intent')
 
-    if event['type'] == 'customer.subscription.updated':
-        event_info = event['data']['object']
-        print('sub updated')
-        print(event)
-
     # process invoice.payment_succeed webhook
-    # extend membership date, update subscription id, when payment succeeds
+    # triggers once every subscription period when payment is successful
+    # update membership plan, membership expiration date, subscription id
     if event['type'] == 'invoice.payment_succeeded':
         event_info = event['data']['object']
 
         # try to get member from webhook customer id
         try:
-            # exctract data from webhook info
+            # exctract data from webhook
             stripe_customer_id = event_info['customer']
             stripe_subscription_id = event_info['lines']['data'][0]['subscription']
             membership_expiration = datetime.fromtimestamp(event_info['lines']['data'][0]['period']['end'])
@@ -447,15 +443,40 @@ def stripe_webhooks(request):
             print('member exp updated')
 
         except Exception:
-            print('could not update member info')
+            print('could not update member exp')
 
         print('invoice paid')
+
+    # process customer.subscription.updated webhook
+    # triggers when subscription is updated on stripe (ie. when adding a trial period to subscription)
+    # update membership plan, membership expiration date, subscription id
+    if event['type'] == 'customer.subscription.updated':
+        event_info = event['data']['object']
+
+        # try to get member from webhook customer id
+        try:
+            # exctract data from webhook
+            stripe_customer_id = event_info['customer']
+            stripe_subscription_id = event_info['id']
+            membership_expiration = datetime.fromtimestamp(event_info['current_period_end'])
+            subscription_plan_id = event_info['plan']['id']
+
+            # update member info
+            member = get_user_model().objects.get(stripe_customer_id=stripe_customer_id)
+            member.stripe_subscription_id = stripe_subscription_id
+            member.membership_expiration = membership_expiration
+            membership = Membership.objects.get(subscription_plan_id=subscription_plan_id)
+            member.membership = membership
+            member.save()
+            print('subscription updated')
+
+        except Exception:
+            print('could not update subcription')
 
     return HttpResponse(status=200)
 
 
 # to do:
-# process membership billing cycle update webhook
 # forgot password - email server
 # admin panel QOL - filter payment status
 
