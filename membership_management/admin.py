@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import MemberCreationForm, MemberChangeForm
 from .models import Membership, Member, CheckInLog, Payment, AuxiliaryMember
+from import_export.admin import ImportExportActionModelAdmin
 
 
 # Register your models here.
@@ -38,7 +39,7 @@ class MemberAdmin(UserAdmin):
     readonly_fields = ('stripe_subscription_id', )
 
 
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
     list_display = ('member', 'membership', 'amount', 'created_at', 'status')
 
     def has_change_permission(self, request, obj=None):
@@ -48,8 +49,12 @@ class PaymentAdmin(admin.ModelAdmin):
         return False
 
 
+class CheckInLogAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Member, MemberAdmin)
-admin.site.register(CheckInLog)
+admin.site.register(CheckInLog, CheckInLogAdmin)
 admin.site.register(Membership)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(AuxiliaryMember)

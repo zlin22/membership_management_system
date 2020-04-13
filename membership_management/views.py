@@ -552,10 +552,12 @@ def stripe_webhooks(request):
 # to do:
 # forgot password - email server
 # admin panel QOL - filter payment status
+# SSL
+# test + prod branches environment separation on heroku
+# hotshot clone on heroku
 
 # optional
 # notify membership renewal failed payment
 # email receipts for purchases
 # email reminders when membership expires?
 # auto log out
-# export payments to excel

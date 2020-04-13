@@ -83,7 +83,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'storages'
+    'storages',
+    'import_export',
 ]
 
 AUTH_USER_MODEL = 'membership_management.Member'
