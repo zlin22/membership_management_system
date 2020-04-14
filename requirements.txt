@@ -7,3 +7,4 @@ stripe
 Pillow
 boto3
 django-storages
+django-import-export
