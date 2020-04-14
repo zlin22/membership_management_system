@@ -37,7 +37,7 @@ ALLOWED_HOSTS = [ALLOWED_HOST1, ALLOWED_HOST2, '127.0.0.1', ]
 CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 
-USE_EMAIL = False
+USE_EMAIL = True
 DEFAULT_FROM_EMAIL = 'Membership Management <contact@zlin22.me>'
 
 # Mailgun email config
