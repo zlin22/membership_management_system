@@ -50,6 +50,8 @@ if USE_EMAIL:
     # EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = 'Membership Management <contact@zlin22.me>'
+
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
     EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
