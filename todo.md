@@ -1,7 +1,5 @@
 TODO file
 
-# to do:
-# admin panel QOL - filter payment status
 # hotshot clone on heroku
 
 # optional
