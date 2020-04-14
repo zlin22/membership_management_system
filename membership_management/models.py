@@ -21,7 +21,7 @@ class Membership(models.Model):
     subscription_plan_id = models.CharField(max_length=1000, blank=True, null=True, verbose_name="[ONLY for SUBSCRIPTIONS] plan ID in Stripe dashboard")
     number_of_days_valid = models.IntegerField(default=0, verbose_name="[ONLY for ONE-TIME memberships] number of days valid")
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_displayed = models.BooleanField(verbose_name="Is displayed on the website for customer to purchase", default=True)
+    is_displayed = models.BooleanField(verbose_name="Is displayed for purchase", default=True)
     display_order = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:

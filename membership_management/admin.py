@@ -11,6 +11,13 @@ class AuxiliaryMemberInline(admin.TabularInline):
     extra = 1
 
 
+class AuxiliaryMemberAdmin(admin.ModelAdmin):
+    search_fields = ('email', 'first_name', 'last_name', 'primary_member')
+    list_display = ('email', 'first_name', 'last_name',
+                    'phone_number', 'primary_member',)
+    ordering = ('first_name', )
+
+
 class MemberAdmin(UserAdmin):
     add_form = MemberCreationForm
     form = MemberChangeForm
@@ -41,6 +48,8 @@ class MemberAdmin(UserAdmin):
 
 class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
     list_display = ('member', 'membership', 'amount', 'created_at', 'status')
+    list_filter = ('status',)
+    search_fields = ('amount', 'member__email')
 
     def has_change_permission(self, request, obj=None):
         return False
@@ -50,11 +59,17 @@ class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
 
 
 class CheckInLogAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
-    pass
+    list_display = ('first_name', 'last_name', 'email', 'checked_in_at')
+
+
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = ('title', 'price', 'is_displayed', 'is_subscription', 'display_order', )
+    ordering = ('display_order', )
+    list_filter = ('is_displayed', 'is_subscription', )
 
 
 admin.site.register(Member, MemberAdmin)
 admin.site.register(CheckInLog, CheckInLogAdmin)
-admin.site.register(Membership)
+admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Payment, PaymentAdmin)
-admin.site.register(AuxiliaryMember)
+admin.site.register(AuxiliaryMember, AuxiliaryMemberAdmin)
