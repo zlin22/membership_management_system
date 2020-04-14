@@ -1,9 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import MemberCreationForm, MemberChangeForm
-from .models import Membership, Member, CheckInLog, Payment
+from .models import Membership, Member, CheckInLog, Payment, AuxiliaryMember
+from import_export.admin import ImportExportActionModelAdmin
+
 
 # Register your models here.
+class AuxiliaryMemberInline(admin.TabularInline):
+    model = AuxiliaryMember
+    extra = 1
 
 
 class MemberAdmin(UserAdmin):
@@ -17,9 +22,12 @@ class MemberAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'profile_pic', 'membership',
                            'membership_expiration', 'stripe_subscription_id', 'stripe_customer_id',
-                           'override_recurring_cycle_starts_on', 'password')}),
+                           'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
+    inlines = [
+        AuxiliaryMemberInline
+    ]
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -28,35 +36,10 @@ class MemberAdmin(UserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('first_name', )
-    readonly_fields = ('stripe_subscription_id', 'stripe_customer_id')
-
-    # def _allow_edit(self, obj=None):
-    #     if not obj:
-    #         return True
-    #     return not (obj.is_staff or obj.is_superuser)
-
-    # def has_change_permission(self, request, obj=None):
-    #     return self._allow_edit(obj)
-
-    # def has_delete_permission(self, request, obj=None):
-    #     return self._allow_edit(obj)
-
-    def has_add_permission(self, request):
-        return True
-
-    def has_view_permission(self, request, obj=None):
-        return True
-
-    def has_module_permission(self, request):
-        return True
+    readonly_fields = ('stripe_subscription_id', )
 
 
-class CheckInLogAdmin(admin.ModelAdmin):
-    list_display = ('member', 'checked_in_at')
-    readonly_fields = ('member', 'checked_in_at')
-
-
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
     list_display = ('member', 'membership', 'amount', 'created_at', 'status')
 
     def has_change_permission(self, request, obj=None):
@@ -66,7 +49,12 @@ class PaymentAdmin(admin.ModelAdmin):
         return False
 
 
+class CheckInLogAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Member, MemberAdmin)
 admin.site.register(CheckInLog, CheckInLogAdmin)
 admin.site.register(Membership)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(AuxiliaryMember)

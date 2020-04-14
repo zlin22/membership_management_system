@@ -75,7 +75,6 @@ DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
 # s3 private media settings
 PRIVATE_MEDIA_LOCATION = 'private'
 PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
-# AWS_S3_REGION_NAME = 'us-east-2'
 DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'  # <-- here is where we reference it
 
 STATICFILES_DIRS = [
@@ -92,7 +91,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'storages'
+    'storages',
+    'import_export',
 ]
 
 AUTH_USER_MODEL = 'membership_management.Member'
