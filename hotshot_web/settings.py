@@ -21,6 +21,7 @@ STRIPE_API_KEY = os.environ['STRIPE_API_KEY']
 STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
 STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
 ALLOWED_HOST1 = os.environ['ALLOWED_HOST1']
+ALLOWED_HOST2 = os.environ['ALLOWED_HOST2']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -31,7 +32,7 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
-ALLOWED_HOSTS = [ALLOWED_HOST1, '127.0.0.1', ]
+ALLOWED_HOSTS = [ALLOWED_HOST1, ALLOWED_HOST2, '127.0.0.1', ]
 
 CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
