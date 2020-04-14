@@ -42,6 +42,7 @@ class Member(AbstractUser):
     stripe_subscription_id = models.CharField(max_length=500, blank=True, null=True,)
     stripe_customer_id = models.CharField(max_length=500, blank=True, null=True, verbose_name="[DO NOT EDIT UNLESS INSTRUCTED] Stripe customer ID")
     profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
@@ -59,6 +60,7 @@ class AuxiliaryMember(models.Model):
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=16, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pic', blank=True, null=True, storage=PrivateMediaStorage())
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.email

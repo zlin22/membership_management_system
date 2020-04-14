@@ -14,8 +14,9 @@ class AuxiliaryMemberInline(admin.TabularInline):
 class AuxiliaryMemberAdmin(admin.ModelAdmin):
     search_fields = ('email', 'first_name', 'last_name', 'primary_member')
     list_display = ('email', 'first_name', 'last_name',
-                    'phone_number', 'primary_member',)
+                    'phone_number', 'primary_member', 'created_at')
     ordering = ('first_name', )
+    readonly_fields = ('created_at', )
 
 
 class MemberAdmin(UserAdmin):
@@ -23,13 +24,13 @@ class MemberAdmin(UserAdmin):
     form = MemberChangeForm
     model = Member
     list_display = ('email', 'first_name', 'last_name',
-                    'phone_number', 'membership', 'membership_expiration', )
+                    'phone_number', 'membership', 'membership_expiration', 'created_at', )
     list_filter = ('is_staff',)
     # exclude = ('username',)
     fieldsets = (
         (None, {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'profile_pic', 'membership',
                            'membership_expiration', 'stripe_subscription_id', 'stripe_customer_id',
-                           'password')}),
+                           'password', 'created_at')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
     )
     inlines = [
@@ -43,7 +44,7 @@ class MemberAdmin(UserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('first_name', )
-    readonly_fields = ('stripe_subscription_id', )
+    readonly_fields = ('stripe_subscription_id', 'created_at', )
 
 
 class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
