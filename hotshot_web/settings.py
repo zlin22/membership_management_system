@@ -38,7 +38,7 @@ CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 
 USE_EMAIL = True
-DEFAULT_FROM_EMAIL = 'Membership Management <contact@zlin22.me>'
+DEFAULT_FROM_EMAIL = 'Membership Management <no_reply@zlin22.me>'
 
 # Mailgun email config
 if USE_EMAIL:
@@ -46,9 +46,9 @@ if USE_EMAIL:
     EMAIL_HOST = 'smtp.postmarkapp.com'
     EMAIL_HOST_USER = os.environ['POSTMARK_PASSWORD']
     EMAIL_HOST_PASSWORD = os.environ['POSTMARK_PASSWORD']
-    # EMAIL_HOST = 'smtp.sendgrid.com'
-    # EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
-    # EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
+    # EMAIL_HOST = 'smtp.mailgun.org'
+    # EMAIL_HOST_USER = 'no_reply@mg.zlin22.me'
+    # EMAIL_HOST_PASSWORD = '0ef8c2c7e8ab3133ff6a86acb20b60e0-915161b7-67516a00'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
 
