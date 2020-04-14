@@ -32,25 +32,31 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
-ALLOWED_HOSTS = [ALLOWED_HOST1, ALLOWED_HOST2, '127.0.0.1', ]
+ALLOWED_HOSTS = [ALLOWED_HOST1, ALLOWED_HOST2, '127.0.0.1', 'localhost']
 
 CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
 
-USE_EMAIL = True
-DEFAULT_FROM_EMAIL = 'Membership Management <no_reply@zlin22.me>'
+USE_EMAIL = 'gmail'
 
 # Mailgun email config
-if USE_EMAIL:
+if USE_EMAIL == 'postmark':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.postmarkapp.com'
     EMAIL_HOST_USER = os.environ['POSTMARK_PASSWORD']
     EMAIL_HOST_PASSWORD = os.environ['POSTMARK_PASSWORD']
-    # EMAIL_HOST = 'smtp.mailgun.org'
-    # EMAIL_HOST_USER = 'no_reply@mg.zlin22.me'
-    # EMAIL_HOST_PASSWORD = '0ef8c2c7e8ab3133ff6a86acb20b60e0-915161b7-67516a00'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = 'Membership Management <no_reply@zlin22.me>'
+
+elif USE_EMAIL == 'gmail':
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST_USER = os.environ['GMAIL_USER']
+    EMAIL_HOST_PASSWORD = os.environ['GMAIL_PASSWORD']
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = 'zlin@zlin22.me'
 
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

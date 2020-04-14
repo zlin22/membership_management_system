@@ -548,18 +548,3 @@ def stripe_webhooks(request):
             print('could not cancel subcription')
 
     return HttpResponse(status=200)
-
-
-# to do:
-# admin panel QOL - filter payment status
-# SSL
-# test + prod branches environment separation on heroku
-# hotshot clone on heroku
-
-# optional
-# unit testing
-# travis CI
-# notify membership renewal failed payment
-# email receipts for purchases
-# email reminders when membership expires?
-# auto log out
