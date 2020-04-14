@@ -1,5 +1,6 @@
 .env
 envmac/
+env/
 .vscode/
 
 # Created by https://www.gitignore.io/api/macos,django,python,windows,visualstudiocode
