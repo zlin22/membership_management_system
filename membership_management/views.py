@@ -10,7 +10,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.db.models import Q
+# from django.db.models import Q
 
 
 # START Stripe setup #############
