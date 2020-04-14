@@ -62,11 +62,6 @@ DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
 PRIVATE_MEDIA_LOCATION = 'private'
 PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
 
-# # AWS_S3_REGION_NAME = 'us-east-2'
-# AWS_LOCATION = 'static'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-
 DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'  # <-- here is where we reference it
 
 STATICFILES_DIRS = [
