@@ -1,6 +1,7 @@
-TODO file
+# TODO file
 
 # hotshot clone on heroku
+# set static images to be different for hotshot vs hitt
 
 # optional
 # unit testing
