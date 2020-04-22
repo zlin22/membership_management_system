@@ -1,7 +1,6 @@
 # TODO file
 
-# hotshot clone on heroku
-# set static images to be different for hotshot vs hitt
+# update the company name to be dynamic in HTML templates
 
 # optional
 # unit testing
