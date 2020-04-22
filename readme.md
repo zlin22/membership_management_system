@@ -4,4 +4,4 @@
 3. postmark domain verification or set up Gmail SMTP and allow less secure apps
 4. update site logo
 
-(optional) purchase barcode scanner: https://amzn.to/3edfgVD
+(optional) purchase barcode scanner: https://amzn.to/2KlIFzh
