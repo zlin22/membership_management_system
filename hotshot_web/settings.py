@@ -36,8 +36,11 @@ DEBUG = (os.environ['ENVIRONMENT'] == 'test')
 
 ALLOWED_HOSTS = [ALLOWED_HOST1, ALLOWED_HOST2, '127.0.0.1', 'localhost']
 
-CSRF_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
-SESSION_COOKIE_SECURE = (os.environ['ENVIRONMENT'] != 'test')
+if os.environ['ENVIRONMENT'] != 'test':
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
 
 USE_EMAIL = 'gmail'
 
