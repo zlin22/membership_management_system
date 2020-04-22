@@ -89,7 +89,7 @@
   <script src="{% static 'membership_management/js/script.min.js' %}"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script>
-    var stripe = Stripe('pk_test_KXcUhKDdisWZTPyW1eesLHLt00AkrzscYR');
+    var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
     var button = document.querySelectorAll('.buy').forEach((button) => {
       button.addEventListener('click', function (e) {
         e.preventDefault();

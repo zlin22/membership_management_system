@@ -2,6 +2,7 @@
 envmac/
 env/
 .vscode/
+staticfiles/
 venv/
 
 # Created by https://www.gitignore.io/api/macos,django,python,windows,visualstudiocode
