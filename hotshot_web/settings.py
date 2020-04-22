@@ -149,17 +149,27 @@ WSGI_APPLICATION = 'hotshot_web.wsgi.application'
 #     }
 # }
 
-if os.environ['ENVIRONMENT'] == 'test':
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.environ['POSTGRES_DB_NAME'],
-            "USER": os.environ['POSTGRES_USER'],
-            "PASSWORD": os.environ['POSTGRES_PASSWORD'],
-            "HOST": "localhost",
-            "PORT": "",
-        }
+# if os.environ['ENVIRONMENT'] == 'test':
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql_psycopg2",
+#             "NAME": os.environ['POSTGRES_DB_NAME'],
+#             "USER": os.environ['POSTGRES_USER'],
+#             "PASSWORD": os.environ['POSTGRES_PASSWORD'],
+#             "HOST": "localhost",
+#             "PORT": "",
+#         }
+#     }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ['POSTGRES_DB_NAME'],
+        "USER": os.environ['POSTGRES_USER'],
+        "PASSWORD": os.environ['POSTGRES_PASSWORD'],
+        "HOST": "localhost",
+        "PORT": "",
     }
+}
 
 
 # Password validation
