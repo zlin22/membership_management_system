@@ -82,7 +82,6 @@ STATICFILES_STORAGE = 'hotshot_web.storage_backends.StaticStorage'
 # s3 public media settings
 PUBLIC_MEDIA_LOCATION = 'media'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
-DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
 # s3 private media settings
 PRIVATE_MEDIA_LOCATION = 'private'
 PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
@@ -161,17 +160,17 @@ if os.environ['ENVIRONMENT'] == 'test':
             "PORT": "",
         }
     }
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": "zhilin",
-#         "USER": "zhilin",
-#         "PASSWORD": os.environ.get('POSTGRES_PASSWORD'),
-#         "HOST": "localhost",
-#         "PORT": "",
-#     }
-# }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.environ['POSTGRES_DB_NAME'],
+            "USER": os.environ['POSTGRES_USER'],
+            "PASSWORD": os.environ['POSTGRES_PASSWORD'],
+            "HOST": os.environ['POSTGRES_HOST'],
+            "PORT": os.environ['POSTGRES_PORT'],
+        }
+    }
 
 
 # Password validation
@@ -213,5 +212,4 @@ USE_TZ = True
 LOGIN_REDIRECT_URL = 'admin'
 LOGOUT_REDIRECT_URL = '/admin'
 
-if (os.environ['ENVIRONMENT'] != 'test'):
-    django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
