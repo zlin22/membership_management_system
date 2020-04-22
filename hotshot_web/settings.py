@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STRIPE_API_KEY = os.environ['STRIPE_API_KEY']
 STRIPE_ENDPOINT_SECRET = os.environ['STRIPE_ENDPOINT_SECRET']
 STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
+STRIPE_PUBLIC_KEY = os.environ['STRIPE_PUBLIC_KEY']
 ALLOWED_HOST1 = os.environ['ALLOWED_HOST1']
 ALLOWED_HOST2 = os.environ['ALLOWED_HOST2']
 
@@ -129,6 +130,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'hotshot_web.context_processors.export_vars',
             ],
         },
     },
