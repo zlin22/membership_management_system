@@ -23,6 +23,7 @@ STRIPE_REDIRECT_URL_BASE = os.environ['STRIPE_REDIRECT_URL_BASE']
 STRIPE_PUBLIC_KEY = os.environ['STRIPE_PUBLIC_KEY']
 ALLOWED_HOST1 = os.environ['ALLOWED_HOST1']
 ALLOWED_HOST2 = os.environ['ALLOWED_HOST2']
+COMPANY_NAME = os.environ['COMPANY_NAME']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
