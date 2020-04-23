@@ -39,7 +39,7 @@ class MemberAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'membership', 'membership_expiration', 'override_recurring_cycle_starts_on', 'password1', 'password2', 'is_staff', 'is_active')}
+            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'membership', 'membership_expiration', 'password1', 'password2', 'is_staff', 'is_active')}
          ),
     )
     search_fields = ('email', 'first_name', 'last_name')
