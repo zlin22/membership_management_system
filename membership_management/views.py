@@ -10,7 +10,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 import stripe
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-# from django.db.models import Q
+from django.db.models import Q
 
 
 # START Stripe setup #############
@@ -34,25 +34,25 @@ UPDATE_CANCEL_URL = settings.STRIPE_REDIRECT_URL_BASE + '/account'
 def check_in(request):
     # if request is POST try to find the member information
     if request.method == "POST":
-        email = request.POST["member_email"]
+        email_or_phone = request.POST["email_or_phone"]
 
         # try to get email from submission; if fail, return no account found
         # first check if email belongs to primary user; set to member if found
         try:
             member = get_user_model().objects.get(
-                email__iexact=email
+                Q(email__iexact=email_or_phone) | Q(phone_number=email_or_phone)
             )
 
         except Exception:
             # check if email belongs to auxiliary member; set to member if found
             try:
                 member = AuxiliaryMember.objects.get(
-                    email__iexact=email
+                    Q(email__iexact=email_or_phone) | Q(phone_number=email_or_phone)
                 )
 
             except Exception:
                 context = {
-                    "message2": "No account found with that email. Please try again.",
+                    "message2": "No account found. Please try again.",
                     "alert_type": "alert-warning",
                 }
                 return render(request, "membership_management/check_in.html", context)

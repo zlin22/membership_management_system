@@ -162,7 +162,12 @@
       <div class="card-body">
         <div>Name: {{aux_mem.first_name}} {{aux_mem.last_name}}</div>
         <div>Phone: {{aux_mem.phone_number}}</div>
-        <div>Email: {{aux_mem.email}}</div>        
+        <div>Email: {{aux_mem.email}}</div>
+        <hr>
+        <h5 class="card-title">Auxiliary Member {{ forloop.counter }} Barcode</h5>
+        <div style="margin: 10px"><img
+            src="https://mobiledemand-barcode.azurewebsites.net/barcode/image?content={{aux_mem.email}}&size=80&symbology=CODE_128&format=png&text=false"><br>
+        </div>
       </div>
     </div>
     {% endfor %}

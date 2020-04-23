@@ -1,7 +1,5 @@
 # TODO file
 
-# update the company name to be dynamic in HTML templates
-
 # optional
 # unit testing
 # travis CI

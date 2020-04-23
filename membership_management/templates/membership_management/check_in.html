@@ -38,7 +38,7 @@
       <div class="container">
         <div class="block-heading">
           <h2 class="text-info">Member Check In</h2>
-          <p>Scan or enter your email below</p>
+          <p>Scan or enter your email or phone below</p>
           {% if profile_pic %}
           <img height=300 src="{{ profile_pic.url }}" alt="profile_pic">
           {% endif %}
@@ -62,8 +62,8 @@
         <form action="{% url 'check_in' %}" method="post">
           {% csrf_token %}
           <div class="form-group">
-            <label for="email">Member email</label><input class="form-control" type="text" name="member_email"
-              placeholder="Scan or enter your member email" autofocus />
+            <label for="email_or_phone">Member email or phone</label><input class="form-control" type="text" name="email_or_phone"
+              placeholder="Scan or enter your member email or phone" autofocus />
           </div>
           <button class="btn btn-primary btn-block" type="submit">
             Check In
