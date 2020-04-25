@@ -4,4 +4,5 @@
 3. postmark domain verification or set up Gmail SMTP and allow less secure apps
 4. update site logo
 
-(optional) purchase barcode scanner: https://amzn.to/2KlIFzh, refurbished version https://amzn.to/2VS5BeT
+(optional) purchase barcode scanner: Honeywell Xenon 1900: https://amzn.to/3aBcZAz, refurbished version https://amzn.to/3eSkCWv
+

@@ -236,7 +236,6 @@ def create_account(request):
             login(request, user)
             return redirect('account')
         else:
-            # form = MemberCreationForm()
             return render(request, 'membership_management/create_account.html', {'form': form})
 
     else:

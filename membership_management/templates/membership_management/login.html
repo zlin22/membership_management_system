@@ -1,90 +1,49 @@
-<!DOCTYPE html>
-<html>
+{% extends 'membership_management/base.html' %}
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-  <title>{{ COMPANY_NAME }}</title>
-  {%load static%}
-  <link rel="stylesheet" href="{% static 'membership_management/bootstrap/css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css" />
-  <link rel="stylesheet" href="{% static 'membership_management/css/styles.min.css' %}" />
-</head>
+{% block title %}Log In{% endblock %}
 
-<body>
-  <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+{% block content %}
+<main class="page login-page">
+  <section class="clean-block clean-form dark">
     <div class="container">
-      <a class="navbar-brand logo" href="/"><img src="{% static 'membership_management/img/logo.jpg' %}"
-          height="50" />&nbsp;{{ COMPANY_NAME }}</a><button data-toggle="collapse" class="navbar-toggler"
-        data-target="#navcol-1">
-        <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navcol-1">
-        <ul class="nav navbar-nav ml-auto">
-          <!-- <li class="nav-item" role="presentation">
-            <a class="nav-link" href="{% url 'check_in' %}">CHECK IN</a>
-          </li> -->
-          <li class="nav-item" role="presentation">
-            <a class="nav-link" href="{% url 'membership_page' %}">Membership</a>
-          </li>
-        </ul>
-        <a class="btn btn-outline-secondary" role="button" href="{% url 'account' %}">ACCOUNT</a>
+      <div class="block-heading">
+        <h2 class="text-info">Log In</h2>
+        <p>
+          Log in to your account to manage your membership.
+        </p>
       </div>
-    </div>
-  </nav>
-  <main class="page login-page">
-    <section class="clean-block clean-form dark">
-      <div class="container">
-        <div class="block-heading">
-          <h2 class="text-info">Log In</h2>
-          <p>
-            Log in to your account to manage your membership.
-          </p>
+      <form action="{% url 'login' %}" method="post">
+        {% if success_message %}
+        <div class="alert alert-success" role="alert">
+          <strong>{{ success_message }}</strong>
         </div>
-        <form action="{% url 'login' %}" method="post">
-          {% if success_message %}
-          <div class="alert alert-success" role="alert">
-            <strong>{{ success_message }}</strong>
-          </div>
-          {% endif %}
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="email">Email</label><input class="form-control item" type="email" name="email" />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label><input class="form-control" type="password" name="password" />
-          </div>
-          <button class="btn btn-primary btn-block" type="submit">
-            Log In
-          </button>
-          <p class="text-left" style="margin: 15px 0px;">
-            <a href="{% url 'password_reset' %}">Forgot Password?</a>
-          </p>
-          {% if message %}
-          <div class="alert alert-danger" role="alert">
-            <strong>{{ message }}</strong>
-          </div>
-          {% endif %}
-          <hr />
-          <p class="text-left" style="margin: 10px 0px;">
-            New to Hot Shot?
-          </p>
-          <a class="btn btn-outline-primary btn-block" role="button" href="{% url 'create_account' %}">Create
-            Account</a>
-        </form>
-      </div>
-    </section>
-  </main>
-  <footer class="page-footer light" style="padding: 0px;">
-    <div class="footer-copyright">
-      <p>Membership Management System by Z Lin</p>
+        {% endif %}
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="email">Email</label><input class="form-control item" type="email" name="email" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label><input class="form-control" type="password" name="password" />
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">
+          Log In
+        </button>
+        <p class="text-left" style="margin: 15px 0px;">
+          <a href="{% url 'password_reset' %}">Forgot Password?</a>
+        </p>
+        {% if message %}
+        <div class="alert alert-danger" role="alert">
+          <strong>{{ message }}</strong>
+        </div>
+        {% endif %}
+        <hr />
+        <p class="text-left" style="margin: 10px 0px;">
+          New to Hot Shot?
+        </p>
+        <a class="btn btn-outline-primary btn-block" role="button" href="{% url 'create_account' %}">Create
+          Account</a>
+      </form>
     </div>
-  </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-  <script src="{% static 'membership_management/js/script.min.js' %}"></script>
-</body>
-
-</html>
+  </section>
+</main>
+{% endblock %}

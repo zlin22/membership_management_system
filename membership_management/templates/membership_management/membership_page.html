@@ -1,179 +1,144 @@
-<!DOCTYPE html>
-<html>
+{% extends 'membership_management/base.html' %}
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-  <title>{{ COMPANY_NAME }}</title>
-  {%load static%}
-  <link rel="stylesheet" href="{% static 'membership_management/bootstrap/css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css" />
-  <link rel="stylesheet" href="{% static 'membership_management/css/styles.min.css' %}" />
-</head>
+{% block title %}Membership{% endblock %}
 
-<body>
-  <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+{% block content %}
+<main class="page pricing-table-page">
+  <section class="clean-block clean-pricing dark">
     <div class="container">
-      <a class="navbar-brand logo" href="/"><img src="{% static 'membership_management/img/logo.jpg' %}"
-          height="50" />&nbsp;{{ COMPANY_NAME }}</a><button data-toggle="collapse" class="navbar-toggler"
-        data-target="#navcol-1">
-        <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navcol-1">
-        <ul class="nav navbar-nav ml-auto">
-          <!-- <li class="nav-item" role="presentation">
-            <a class="nav-link " href="{% url 'check_in' %}">CHECK IN</a>
-          </li> -->
-          <li class="nav-item" role="presentation">
-            <a class="nav-link active" href="{% url 'membership_page' %}">Membership</a>
-          </li>
-        </ul>
-        <a class="btn btn-outline-secondary" role="button" href="{% url 'account' %}">ACCOUNT</a>
+      <div class="block-heading">
+        <h2 class="text-info">Membership Pricing</h2>
+        <p>
+          <!-- We have several optionstypes of memberships. -->
+        </p>
       </div>
-    </div>
-  </nav>
-  <main class="page pricing-table-page">
-    <section class="clean-block clean-pricing dark">
-      <div class="container">
-        <div class="block-heading">
-          <h2 class="text-info">Membership Pricing</h2>
-          <p>
-            <!-- We have several optionstypes of memberships. -->
-          </p>
-        </div>
 
-        <div class="card-deck">
-          {% for membership in memberships %}
+      <div class="card-deck">
+        {% for membership in memberships %}
 
-          <div class="card clean-pricing-item text-center" style="min-width: 18rem; margin: 10px;">
-            <div class="card-header bg-transparent d-flex align-items-center justify-content-center h-100">
-              <h4>{{ membership.title }}</h4>
-            </div>
-            <div class="card-body bg-transparent d-flex align-items-center justify-content-center h-100"
-              style="padding-top: 0px;">
-              {% if membership.banner_message %}
-              <div class="ribbon"><span>{{ membership.banner_message }}</span></div>
-              {% endif %}
-              <p class="card-text">{{ membership.description }}</p>
-            </div>
-            <div class="card-footer bg-transparent ">
-              <div class="price">
-                <h4>${{ membership.price }}</h4>
-              </div>
-              {% if is_membership_active and member.membership.is_subscription == 'Y' %}
-              <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Thanks for subscribing!</a>
-              {% elif is_membership_active and membership.is_subscription == "Y"  %}
-              <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Contact us to subscribe!</a>
-              {% elif membership.is_subscription != 'N' %}
-              <a id="{{membership.id}}" class="subscribe btn btn-outline-primary btn-block">Subscribe</a>
-              {% else %}
-              <a id="{{membership.id}}" class="buy btn btn-outline-primary btn-block">Buy Now</a>
-              {% endif %}
-            </div>
+        <div class="card clean-pricing-item text-center" style="min-width: 18rem; margin: 10px;">
+          <div class="card-header bg-transparent d-flex align-items-center justify-content-center h-100">
+            <h4>{{ membership.title }}</h4>
           </div>
-          {% endfor %}
+          <div class="card-body bg-transparent d-flex align-items-center justify-content-center h-100"
+            style="padding-top: 0px;">
+            {% if membership.banner_message %}
+            <div class="ribbon"><span>{{ membership.banner_message }}</span></div>
+            {% endif %}
+            <p class="card-text">{{ membership.description }}</p>
+          </div>
+          <div class="card-footer bg-transparent ">
+            <div class="price">
+              <h4>${{ membership.price }}</h4>
+            </div>
+            {% if is_membership_active and member.membership.is_subscription == 'Y' %}
+            <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Thanks for subscribing!</a>
+            {% elif is_membership_active and membership.is_subscription == "Y"  %}
+            <a id="{{membership.id}}" class="btn btn-outline-primary btn-block">Contact us to subscribe!</a>
+            {% elif membership.is_subscription != 'N' %}
+            <a id="{{membership.id}}" class="subscribe btn btn-outline-primary btn-block">Subscribe</a>
+            {% else %}
+            <a id="{{membership.id}}" class="buy btn btn-outline-primary btn-block">Buy Now</a>
+            {% endif %}
+          </div>
         </div>
-
+        {% endfor %}
       </div>
-    </section>
-  </main>
-  <footer class="page-footer light" style="padding: 0px;">
-    <div class="footer-copyright">
-      <p>Membership Management System by Z Lin</p>
+
     </div>
-  </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-  <script src="{% static 'membership_management/js/script.min.js' %}"></script>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
-    var button = document.querySelectorAll('.buy').forEach((button) => {
-      button.addEventListener('click', function (e) {
-        e.preventDefault();
-        createSessionAndRedirect(button.id);
-      });
-    });
+  </section>
+</main>
+{% endblock %}
 
-    var subscribeButton = document.querySelectorAll('.subscribe').forEach((button) => {
-      button.addEventListener('click', function (e) {
-        e.preventDefault();
-        createSubscriptionSessionAndRedirect(button.id);
-      });
-    });
+{% block scripts %}
+<script>
+  document.querySelector("#membership").classList.add("active") // make nav item display as active
+</script>
 
-    function getCookie(name) {
-      var cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
+<script>
+  var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+  var button = document.querySelectorAll('.buy').forEach((button) => {
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+      createSessionAndRedirect(button.id);
+    });
+  });
+
+  var subscribeButton = document.querySelectorAll('.subscribe').forEach((button) => {
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+      createSubscriptionSessionAndRedirect(button.id);
+    });
+  });
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
       }
-      return cookieValue;
     }
-    var csrftoken = getCookie('csrftoken');
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
 
-    function createSessionAndRedirect(buttonId) {
-      //pass checkout info to server to create session
-      fetch('stripe_create_session/'.concat(buttonId), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFTOKEN': csrftoken,
-          "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
-        },
-        body: JSON.stringify({
-          amount: 100,
-        }),
-        credentials: 'same-origin',
+  function createSessionAndRedirect(buttonId) {
+    //pass checkout info to server to create session
+    fetch('stripe_create_session/'.concat(buttonId), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFTOKEN': csrftoken,
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+      },
+      body: JSON.stringify({
+        amount: 100,
+      }),
+      credentials: 'same-origin',
+    })
+      .then((response) => response.json())
+      .then((session) => {
+        // redirect to checkout
+        stripe.redirectToCheckout({ sessionId: session.id })
+        console.log('success', data);
       })
-        .then((response) => response.json())
-        .then((session) => {
-          // redirect to checkout
-          stripe.redirectToCheckout({ sessionId: session.id })
-          console.log('success', data);
-        })
-        .catch((error) => {
-          window.location.href = "{% url 'account' %}"
-          // console.log('not logged in', error);
-        });
-    };
+      .catch((error) => {
+        window.location.href = "{% url 'account' %}"
+        // console.log('not logged in', error);
+      });
+  };
 
 
-    function createSubscriptionSessionAndRedirect(buttonId) {
-      //pass checkout info to server to create session
-      fetch('stripe_subscription_create_session/'.concat(buttonId), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFTOKEN': csrftoken,
-          "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
-        },
-        body: JSON.stringify({
-          amount: 100,
-        }),
-        credentials: 'same-origin',
+  function createSubscriptionSessionAndRedirect(buttonId) {
+    //pass checkout info to server to create session
+    fetch('stripe_subscription_create_session/'.concat(buttonId), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFTOKEN': csrftoken,
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+      },
+      body: JSON.stringify({
+        amount: 100,
+      }),
+      credentials: 'same-origin',
+    })
+      .then((response) => response.json())
+      .then((session) => {
+        // redirect to checkout
+        stripe.redirectToCheckout({ sessionId: session.id })
+        console.log('success', data);
       })
-        .then((response) => response.json())
-        .then((session) => {
-          // redirect to checkout
-          stripe.redirectToCheckout({ sessionId: session.id })
-          console.log('success', data);
-        })
-        .catch((error) => {
-          window.location.href = "{% url 'account' %}"
-          // console.log('not logged in', error);
-        });
-    };
-  </script>
-</body>
-
-</html>
+      .catch((error) => {
+        window.location.href = "{% url 'account' %}"
+        // console.log('not logged in', error);
+      });
+  };
+</script>
+{% endblock %}

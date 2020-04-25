@@ -1,244 +1,209 @@
-<!DOCTYPE html>
-<html>
+{% extends 'membership_management/base.html' %}
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-  <title>{{ COMPANY_NAME }}</title>
-  {%load static%}
-  <link rel="stylesheet" href="{% static 'membership_management/bootstrap/css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css" />
-  <link rel="stylesheet" href="{% static 'membership_management/css/styles.min.css' %}" />
-</head>
+{% block title %}My Account{% endblock %}
 
-<body>
-  <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+{% block content %}
+<main class="page login-page">
+  <section class="clean-block clean-form dark" style="margin: -40px; ">
     <div class="container">
-      <a class="navbar-brand logo" href="/"><img src="{% static 'membership_management/img/logo.jpg' %}"
-          height="50" />&nbsp;{{ COMPANY_NAME }}</a><button data-toggle="collapse" class="navbar-toggler"
-        data-target="#navcol-1">
-        <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navcol-1">
-        <ul class="nav navbar-nav ml-auto">
-          <!-- <li class="nav-item" role="presentation">
-            <a class="nav-link " href="{% url 'check_in' %}">CHECK IN</a>
-          </li> -->
-          <li class="nav-item" role="presentation">
-            <a class="nav-link" href="{% url 'membership_page' %}">Membership</a>
-          </li>
-        </ul>
-        <a class="btn btn-outline-secondary active" role="button" href="{% url 'account' %}">ACCOUNT</a>
-      </div>
-    </div>
-  </nav>
-  <main class="page login-page">
-    <section class="clean-block clean-form dark" style="margin: -40px; ">
-      <div class="container">
-        <div class="block-heading">
-          <h2 class="text-info">Hi {{ member.first_name }} {{ member.last_name }}!</h2>
+      <div class="block-heading">
+        <h2 class="text-info">Hi {{ member.first_name }} {{ member.last_name }}!</h2>
 
-          <div class="card">
-            {% if message %}
-            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-              <strong>{{ message }}</strong>
+        <div class="card">
+          {% if message %}
+          <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+            <strong>{{ message }}</strong>
+          </div>
+          {% endif %}
+          <div class="card-body">
+            <h4 class="card-title">Your Account Barcode</h4>
+            <div style="margin: 10px"><img
+                src="https://mobiledemand-barcode.azurewebsites.net/barcode/image?content={{member.email}}&size=80&symbology=CODE_128&format=png&text=false"><br>
             </div>
-            {% endif %}
-            <div class="card-body">
-              <h4 class="card-title">Your Account Barcode</h4>
-              <div style="margin: 10px"><img
-                  src="https://mobiledemand-barcode.azurewebsites.net/barcode/image?content={{member.email}}&size=80&symbology=CODE_128&format=png&text=false"><br>
-              </div>
-              <!-- <br> -->
-              {% if is_membership_active %}
-                {% if member.membership.is_subscription != 'N' %}
-                  <h6 class="text-muted card-subtitle mb-2">
-                    Current Membership: {{ member.membership }}
-                  </h6>
-                  <h6 class="text-muted card-subtitle mb-2">
-                    Current Cycle Ends: {{ member.membership_expiration }}
-                  </h6>
-                {% else %}
-                  <h6 class="text-muted card-subtitle mb-2">
-                    Expiration: {{ member.membership_expiration }}
-                  </h6>
-                {% endif %}
+            <!-- <br> -->
+            {% if is_membership_active %}
+              {% if member.membership.is_subscription != 'N' %}
+                <h6 class="text-muted card-subtitle mb-2">
+                  Current Membership: {{ member.membership }}
+                </h6>
+                <h6 class="text-muted card-subtitle mb-2">
+                  Current Cycle Ends: {{ member.membership_expiration }}
+                </h6>
               {% else %}
                 <h6 class="text-muted card-subtitle mb-2">
-                  No active membership
+                  Expiration: {{ member.membership_expiration }}
                 </h6>
-                <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
-                  Membership</a>
               {% endif %}
+            {% else %}
+              <h6 class="text-muted card-subtitle mb-2">
+                No active membership
+              </h6>
+              <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
+                Membership</a>
+            {% endif %}
 
-              <a class="btn btn-primary" role="button" style="margin: 0 10px;" href="{% url 'logout' %}">Log Out</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <div class="card shadow mb-3">
-      <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Account Information</p>
-      </div>
-      <div class="card-body">
-        <form action="{% url 'update_member' %}" method="post">
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="col">
-              <div class="form-group">
-                <label for="email"><strong>Email Address</strong></label><input class="form-control" type="email"
-                  placeholder="user@example.com" name="email" value="{{ member.email }}" />
-              </div>
-            </div>
-            <div class="col">
-              <div class="form-group">
-                <label for="phone_number"><strong>Phone Number</strong></label>
-                <input class="form-control" type="tel" name="phone_number" pattern="[0-9]{10}" placeholder="1234567890"
-                  value="{{ member.phone_number }}" />
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-sm" type="submit">
-              Save
-            </button>
-          </div>
-        </form>
-        <div><a href="{% url 'change_password' %}">Change
-            Password</a></div>
-      </div>
-    </div>
-    {% if is_membership_active and member.membership.is_subscription != 'N' %}
-    <div class="card shadow mb-3">
-      <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Membership Information</p>
-      </div>
-      <div class="card-body">
-        <div><a href="#" id="update_payment">Update Payment Information</a></div>
-        <div>
-          <!-- Button trigger modal -->
-          <a href="#" id="cancel_subscription" type="" class="" data-toggle="modal" data-target="#cancelSubModal">
-            Cancel Membership
-          </a>
-          <!-- Modal -->
-          <div class="modal fade" id="cancelSubModal" tabindex="-1" role="dialog"
-            aria-labelledby="cancelSubModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Confirm Cancellation</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  If you cancel your subscription, you will lose access to the club <strong>immediately</strong>.
-                  The remaining time valid on your subscription will be forfeited. There is no way to undo this change.
-                  If you want to become a member in the future, you must subscribe again.
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
-                  <a href="{% url 'cancel_membership' %}" class="btn btn-primary">Cancel Membership</a>
-                </div>
-              </div>
-            </div>
+            <a class="btn btn-primary" role="button" style="margin: 0 10px;" href="{% url 'logout' %}">Log Out</a>
           </div>
         </div>
       </div>
     </div>
-    {% endif %}
-
-    {% if member.auxiliary_members is not None %}
-    {% for aux_mem in member.auxiliary_members.all %}
-    <div class="card shadow mb-3">
-      <div class="card-header py-3">
-        <p class="text-primary m-0 font-weight-bold">Auxiliary Member {{ forloop.counter }}</p>
-      </div>
-      <div class="card-body">
-        <div>Name: {{aux_mem.first_name}} {{aux_mem.last_name}}</div>
-        <div>Phone: {{aux_mem.phone_number}}</div>
-        <div>Email: {{aux_mem.email}}</div>
-        <hr>
-        <h5 class="card-title">Auxiliary Member {{ forloop.counter }} Barcode</h5>
-        <div style="margin: 10px"><img
-            src="https://mobiledemand-barcode.azurewebsites.net/barcode/image?content={{aux_mem.email}}&size=80&symbology=CODE_128&format=png&text=false"><br>
+  </section>
+  <div class="card shadow mb-3">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Account Information</p>
+    </div>
+    <div class="card-body">
+      <form action="{% url 'update_member' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col">
+            <div class="form-group">
+              <label for="email"><strong>Email Address</strong></label><input class="form-control" type="email"
+                placeholder="user@example.com" name="email" value="{{ member.email }}" />
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="phone_number"><strong>Phone Number</strong></label>
+              <input class="form-control" type="tel" name="phone_number" pattern="[0-9]{10}" placeholder="1234567890"
+                value="{{ member.phone_number }}" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-sm" type="submit">
+            Save
+          </button>
+        </div>
+      </form>
+      <div><a href="{% url 'change_password' %}">Change
+          Password</a></div>
+    </div>
+  </div>
+  {% if is_membership_active and member.membership.is_subscription != 'N' %}
+  <div class="card shadow mb-3">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Membership Information</p>
+    </div>
+    <div class="card-body">
+      <div><a href="#" id="update_payment">Update Payment Information</a></div>
+      <div>
+        <!-- Button trigger modal -->
+        <a href="#" id="cancel_subscription" type="" class="" data-toggle="modal" data-target="#cancelSubModal">
+          Cancel Membership
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="cancelSubModal" tabindex="-1" role="dialog"
+          aria-labelledby="cancelSubModal" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Confirm Cancellation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                If you cancel your subscription, you will lose access to the club <strong>immediately</strong>.
+                The remaining time valid on your subscription will be forfeited. There is no way to undo this change.
+                If you want to become a member in the future, you must subscribe again.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+                <a href="{% url 'cancel_membership' %}" class="btn btn-primary">Cancel Membership</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    {% endfor %}
-    {% endif %}
+  </div>
+  {% endif %}
 
-  </main>
-  <footer class="page-footer light" style="padding: 0px;">
-    <div class="footer-copyright">
-      <p>Membership Management System by Z Lin</p>
+  {% if member.auxiliary_members is not None %}
+  {% for aux_mem in member.auxiliary_members.all %}
+  <div class="card shadow mb-3">
+    <div class="card-header py-3">
+      <p class="text-primary m-0 font-weight-bold">Auxiliary Member {{ forloop.counter }}</p>
     </div>
-  </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-  <script src="{% static 'membership_management/js/script.min.js' %}"></script>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    var stripe = Stripe('pk_test_KXcUhKDdisWZTPyW1eesLHLt00AkrzscYR');
-    var button = document.querySelectorAll('#update_payment').forEach((button) => {
-      button.addEventListener('click', function (e) {
-        e.preventDefault();
-        createSetupSessionAndRedirect(button.id);
-      });
+    <div class="card-body">
+      <div>Name: {{aux_mem.first_name}} {{aux_mem.last_name}}</div>
+      <div>Phone: {{aux_mem.phone_number}}</div>
+      <div>Email: {{aux_mem.email}}</div>
+      <hr>
+      <h5 class="card-title">Auxiliary Member {{ forloop.counter }} Barcode</h5>
+      <div style="margin: 10px"><img
+          src="https://mobiledemand-barcode.azurewebsites.net/barcode/image?content={{aux_mem.email}}&size=80&symbology=CODE_128&format=png&text=false"><br>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelector("#account").classList.add("active") // make nav item display as active
+</script>
+
+<script>
+  var stripe = Stripe('pk_test_KXcUhKDdisWZTPyW1eesLHLt00AkrzscYR');
+  var button = document.querySelectorAll('#update_payment').forEach((button) => {
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+      createSetupSessionAndRedirect(button.id);
     });
+  });
 
 
-    function getCookie(name) {
-      var cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
       }
-      return cookieValue;
     }
+    return cookieValue;
+  }
 
-    var csrftoken = getCookie('csrftoken');
+  var csrftoken = getCookie('csrftoken');
 
-    function createSetupSessionAndRedirect(buttonId) {
-      //pass checkout info to server to create session
-      fetch('stripe_subscription_setup_session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFTOKEN': csrftoken,
-          "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
-        },
-        body: JSON.stringify({
-          amount: 100,
-        }),
-        credentials: 'same-origin',
+  function createSetupSessionAndRedirect(buttonId) {
+    //pass checkout info to server to create session
+    fetch('stripe_subscription_setup_session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFTOKEN': csrftoken,
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+      },
+      body: JSON.stringify({
+        amount: 100,
+      }),
+      credentials: 'same-origin',
+    })
+      .then((response) => response.json())
+      .then((session) => {
+        // redirect to checkout
+        stripe.redirectToCheckout({ sessionId: session.id })
+        console.log('success', data);
       })
-        .then((response) => response.json())
-        .then((session) => {
-          // redirect to checkout
-          stripe.redirectToCheckout({ sessionId: session.id })
-          console.log('success', data);
-        })
-        .catch((error) => {
-          window.location.href = "{% url 'account' %}"
-          // console.log('not logged in', error);
-        });
-    };
+      .catch((error) => {
+        window.location.href = "{% url 'account' %}"
+        // console.log('not logged in', error);
+      });
+  };
 
-  </script>
-</body>
-
-</html>
+</script>
+{% endblock %}
