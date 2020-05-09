@@ -8,14 +8,18 @@
     <div class="container">
       <div class="block-heading">
         <h2 class="text-info">Membership Pricing</h2>
+        {% for membership in memberships %}
+        {% if membership.title == 'header' %}
         <p>
-          <!-- We have several optionstypes of memberships. -->
+          {{ membership.description }}
         </p>
+        {% endif %}
+        {% endfor %}
       </div>
 
       <div class="card-deck">
         {% for membership in memberships %}
-
+        {% if membership.title != 'header' and membership.title != 'footer' %}
         <div class="card clean-pricing-item text-center" style="min-width: 18rem; margin: 10px;">
           <div class="card-header bg-transparent d-flex align-items-center justify-content-center h-100">
             <h4>{{ membership.title }}</h4>
@@ -42,9 +46,19 @@
             {% endif %}
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
-
+      {% for membership in memberships %}
+      {% if membership.title == 'footer' %}
+        <br>
+        <div>
+          <p>
+            {{ membership.description }}
+          </p>
+        </div>
+      {% endif %}
+      {% endfor %}
     </div>
   </section>
 </main>
