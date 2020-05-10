@@ -256,7 +256,7 @@ def stripe_create_session(request, membership_id):
                 line_items=[{
                     'name': selected_membership.title,
                     'description': selected_membership.description,
-                    'images': ['https://images.squarespace-cdn.com/content/v1/592715679de4bb56b6f52dc3/1575487314377-8ILD99MIL70XF02VY8V6/ke17ZwdGBToddI8pDm48kBD2FKG2VYgv9vJ-sxRHyeVZw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7eYzOKsynbf6SIIjIVpddg9XuI9fW4HahfJRw8_j4CZzf8pmB28R7ZtB-Q9IQS1W4w/favicon.ico'],
+                    # 'images': ['https://images.squarespace-cdn.com/content/v1/592715679de4bb56b6f52dc3/1575487314377-8ILD99MIL70XF02VY8V6/ke17ZwdGBToddI8pDm48kBD2FKG2VYgv9vJ-sxRHyeVZw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7eYzOKsynbf6SIIjIVpddg9XuI9fW4HahfJRw8_j4CZzf8pmB28R7ZtB-Q9IQS1W4w/favicon.ico'],
                     # json.loads(request.body)['amount'],
                     'amount': int(selected_membership.price * 100),
                     'currency': 'usd',
