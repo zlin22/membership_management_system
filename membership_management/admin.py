@@ -30,8 +30,9 @@ class MemberAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'first_name', 'last_name', 'phone_number', 'profile_pic', 'membership',
                            'membership_expiration', 'stripe_subscription_id', 'stripe_customer_id',
-                           'password', 'created_at')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
+                           'password', 'created_at', 'last_login')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active',
+                                    'is_superuser', 'groups', 'user_permissions')}),
     )
     inlines = [
         AuxiliaryMemberInline
@@ -44,7 +45,8 @@ class MemberAdmin(UserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('first_name', )
-    readonly_fields = ('stripe_subscription_id', 'created_at', )
+    readonly_fields = ('stripe_subscription_id', 'created_at',
+                       'last_login', )
 
 
 class PaymentAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
@@ -64,7 +66,8 @@ class CheckInLogAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
 
 
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price', 'is_displayed', 'is_subscription', 'display_order', )
+    list_display = ('title', 'price', 'is_displayed',
+                    'is_subscription', 'display_order', )
     ordering = ('display_order', )
     list_filter = ('is_displayed', 'is_subscription', )
 
