@@ -1,10 +1,8 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"python.pythonPath": "envmac/bin/python3"
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {}
 }

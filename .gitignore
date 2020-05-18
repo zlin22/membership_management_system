@@ -238,3 +238,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/macos,django,python,windows,visualstudiocode
+code.code-workspace
