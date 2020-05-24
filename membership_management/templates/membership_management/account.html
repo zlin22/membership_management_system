@@ -25,24 +25,24 @@
             </div>
             <!-- <br> -->
             {% if is_membership_active %}
-              {% if member.membership.is_subscription != 'N' %}
-                <h6 class="text-muted card-subtitle mb-2">
-                  Current Membership: {{ member.membership }}
-                </h6>
-                <h6 class="text-muted card-subtitle mb-2">
-                  Current Cycle Ends: {{ member.membership_expiration }}
-                </h6>
-              {% else %}
-                <h6 class="text-muted card-subtitle mb-2">
-                  Expiration: {{ member.membership_expiration }}
-                </h6>
-              {% endif %}
+            {% if member.membership.is_subscription != 'N' %}
+            <h6 class="text-muted card-subtitle mb-2">
+              Current Membership: {{ member.membership }}
+            </h6>
+            <h6 class="text-muted card-subtitle mb-2">
+              Current Cycle Ends: {{ member.membership_expiration }}
+            </h6>
             {% else %}
-              <h6 class="text-muted card-subtitle mb-2">
-                No active membership
-              </h6>
-              <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
-                Membership</a>
+            <h6 class="text-muted card-subtitle mb-2">
+              Expiration: {{ member.membership_expiration }}
+            </h6>
+            {% endif %}
+            {% else %}
+            <h6 class="text-muted card-subtitle mb-2">
+              No active membership
+            </h6>
+            <a class="btn btn-primary" role="button" href="{% url 'membership_page' %}" style="margin: 0 10px;">Buy
+              Membership</a>
             {% endif %}
 
             <a class="btn btn-primary" role="button" style="margin: 0 10px;" href="{% url 'logout' %}">Log Out</a>
@@ -96,8 +96,8 @@
           Cancel Membership
         </a>
         <!-- Modal -->
-        <div class="modal fade" id="cancelSubModal" tabindex="-1" role="dialog"
-          aria-labelledby="cancelSubModal" aria-hidden="true">
+        <div class="modal fade" id="cancelSubModal" tabindex="-1" role="dialog" aria-labelledby="cancelSubModal"
+          aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -152,7 +152,7 @@
 </script>
 
 <script>
-  var stripe = Stripe('pk_test_KXcUhKDdisWZTPyW1eesLHLt00AkrzscYR');
+  var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
   var button = document.querySelectorAll('#update_payment').forEach((button) => {
     button.addEventListener('click', function (e) {
       e.preventDefault();
