@@ -52,7 +52,7 @@ if EMAIL_SERVICE == 'postmark':
     EMAIL_HOST_PASSWORD = os.environ['POSTMARK_PASSWORD']
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = 'Membership Management <no_reply@zlin22.me>'
+    DEFAULT_FROM_EMAIL = os.environ['POSTMARK_FROM_EMAIL']
 elif EMAIL_SERVICE == 'gmail':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
