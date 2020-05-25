@@ -42,10 +42,10 @@ if os.environ['ENVIRONMENT'] != 'test':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
 
-USE_EMAIL = 'gmail'
+EMAIL_SERVICE = os.environ['EMAIL_SERVICE']
 
-# Mailgun email config
-if USE_EMAIL == 'postmark':
+# postmark email config
+if EMAIL_SERVICE == 'postmark':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.postmarkapp.com'
     EMAIL_HOST_USER = os.environ['POSTMARK_PASSWORD']
@@ -53,16 +53,14 @@ if USE_EMAIL == 'postmark':
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = 'Membership Management <no_reply@zlin22.me>'
-
-elif USE_EMAIL == 'gmail':
+elif EMAIL_SERVICE == 'gmail':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = os.environ['GMAIL_USER']
     EMAIL_HOST_PASSWORD = os.environ['GMAIL_PASSWORD']
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = 'zlin@zlin22.me'
-
+    DEFAULT_FROM_EMAIL = os.environ['GMAIL_USER']
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
     EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
@@ -88,7 +86,8 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
 # s3 private media settings
 PRIVATE_MEDIA_LOCATION = 'private'
 PRIVATE_FILE_STORAGE = 'hotshot_web.storage_backends.PrivateMediaStorage'
-DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'  # <-- here is where we reference it
+# <-- here is where we reference it
+DEFAULT_FILE_STORAGE = 'hotshot_web.storage_backends.PublicMediaStorage'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'membership_management/static'),

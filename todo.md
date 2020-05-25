@@ -1,6 +1,6 @@
 # TODO file
 
-# BUG FIX: update payment information
+# BUG: postmark setup
 
 # update Stripe Pricing API
 
