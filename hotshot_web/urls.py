@@ -25,6 +25,6 @@ urlpatterns = [
     # path('users/', include('django.contrib.auth.urls')),
 ]
 
-admin.site.site_header = settings.COMPANY_NAME + " Admin | For system support please email contact@zlin22.me"
+admin.site.site_header = settings.COMPANY_NAME + " Admin"
 admin.site.site_title = settings.COMPANY_NAME + " Admin"
 admin.site.index_title = "Welcome to " + settings.COMPANY_NAME + " Admin"
