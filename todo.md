@@ -1,6 +1,6 @@
 # TODO file
 
-# BUG: postmark setup
+# sales taxes
 
 # update Stripe Pricing API
 
