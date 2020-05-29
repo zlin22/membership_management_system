@@ -39,14 +39,16 @@ def check_in(request):
         # first check if email belongs to primary user; set to member if found
         try:
             member = get_user_model().objects.get(
-                Q(email__iexact=email_or_phone) | Q(phone_number=email_or_phone)
+                Q(email__iexact=email_or_phone) | Q(
+                    phone_number=email_or_phone)
             )
 
         except Exception:
             # check if email belongs to auxiliary member; set to member if found
             try:
                 member = AuxiliaryMember.objects.get(
-                    Q(email__iexact=email_or_phone) | Q(phone_number=email_or_phone)
+                    Q(email__iexact=email_or_phone) | Q(
+                        phone_number=email_or_phone)
                 )
 
             except Exception:
@@ -266,6 +268,10 @@ def stripe_create_session(request, membership_id):
                 success_url=SUCCESS_URL,
                 cancel_url=BUY_CANCEL_URL,
                 customer_email=request.user.email,
+                payment_intent_data={
+                    'description': selected_membership.title,
+                    'statement_descriptor': selected_membership.title
+                },
             )
 
         else:
@@ -284,6 +290,10 @@ def stripe_create_session(request, membership_id):
                 success_url=SUCCESS_URL,
                 cancel_url=BUY_CANCEL_URL,
                 customer=request.user.stripe_customer_id,
+                payment_intent_data={
+                    'description': selected_membership.title,
+                    'statement_descriptor': selected_membership.title
+                },
             )
 
         Payment.objects.create(member=request.user, membership=selected_membership,
@@ -406,7 +416,8 @@ def stripe_webhooks(request):
         # and extend membership date
         try:
             # update payment table with status = paid
-            payment = Payment.objects.get(payment_processor_id=event_info['id'])
+            payment = Payment.objects.get(
+                payment_processor_id=event_info['id'])
             payment.status = 'paid'
             payment.save()
 
@@ -444,7 +455,8 @@ def stripe_webhooks(request):
         # If webhook was from a credit card update, get setup_intent
         try:
             # get setup intent which contains customer, subscription_id, and payment_method
-            setup_intent = stripe.SetupIntent.retrieve(event_info['setup_intent'])
+            setup_intent = stripe.SetupIntent.retrieve(
+                event_info['setup_intent'])
 
             # update customer's default payment method
             customer = setup_intent['customer']
@@ -472,14 +484,16 @@ def stripe_webhooks(request):
             # exctract data from webhook
             stripe_customer_id = event_info['customer']
             stripe_subscription_id = event_info['lines']['data'][0]['subscription']
-            membership_expiration = datetime.fromtimestamp(event_info['lines']['data'][0]['period']['end'])
+            membership_expiration = datetime.fromtimestamp(
+                event_info['lines']['data'][0]['period']['end'])
             subscription_plan_id = event_info['lines']['data'][0]['plan']['id']
 
             # update member info
             member = get_user_model().objects.get(stripe_customer_id=stripe_customer_id)
             member.stripe_subscription_id = stripe_subscription_id
             member.membership_expiration = membership_expiration
-            membership = Membership.objects.get(subscription_plan_id=subscription_plan_id)
+            membership = Membership.objects.get(
+                subscription_plan_id=subscription_plan_id)
             member.membership = membership
             member.save()
             print('member exp updated')
@@ -500,7 +514,8 @@ def stripe_webhooks(request):
             # exctract data from webhook
             stripe_customer_id = event_info['customer']
             stripe_subscription_id = event_info['id']
-            membership_expiration = datetime.fromtimestamp(event_info['current_period_end'])
+            membership_expiration = datetime.fromtimestamp(
+                event_info['current_period_end'])
             subscription_plan_id = event_info['plan']['id']
             cancel_at_date = event_info['cancel_at']
 
@@ -509,7 +524,8 @@ def stripe_webhooks(request):
             member.stripe_subscription_id = stripe_subscription_id
             member.membership_expiration = membership_expiration
             if cancel_at_date is None:
-                membership = Membership.objects.get(subscription_plan_id=subscription_plan_id)
+                membership = Membership.objects.get(
+                    subscription_plan_id=subscription_plan_id)
             else:
                 membership = None
             member.membership = membership
@@ -531,7 +547,8 @@ def stripe_webhooks(request):
             stripe_customer_id = event_info['customer']
             cancel_at_period_end = event_info['cancel_at_period_end']
             if cancel_at_period_end is True:
-                membership_expiration = datetime.fromtimestamp(event_info['current_period_end'])
+                membership_expiration = datetime.fromtimestamp(
+                    event_info['current_period_end'])
             else:
                 membership_expiration = date.today() + timedelta(days=-1)
 
