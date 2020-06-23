@@ -16,15 +16,16 @@
       </div>
       {% if alert_type %}
       <div class="alert {{ alert_type }} text-center" role="alert">
-        {% if message1 %}
-        <h3>Hi <strong>{{ message1 }}</strong></h3>
-        {% endif %}
-        {% if message2 %}
-        <h3>{{ message2 }}</h3>
-        {% endif %}
-        {% if message3 %}
-        <h3>{{ message3 }}</h3>
-        {% endif %}
+        <h3>{% if message1 %}
+          Hi <strong>{{ message1 }}</strong>
+          {% endif %}
+          {% if message2 %}
+          {{ message2 }}
+          {% endif %}
+          {% if message3 %}
+          {{ message3 }}
+          {% endif %}
+        </h3>
         {% if purchase_button %}
         <h3><a href="{% url 'membership_page' %}">Buy Membership</a></h3>
         {% endif %}
@@ -33,8 +34,8 @@
       <form action="{% url 'check_in' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-          <label for="email_or_phone">Member email or phone</label><input class="form-control" type="text" name="email_or_phone"
-            placeholder="Scan or enter your member email or phone" autofocus />
+          <label for="email_or_phone">Member email or phone</label><input class="form-control" type="text"
+            name="email_or_phone" placeholder="Scan or enter your member email or phone" autofocus />
         </div>
         <button class="btn btn-primary btn-block" type="submit">
           Check In

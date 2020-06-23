@@ -72,7 +72,7 @@ def check_in(request):
         if is_membership_active:
             context = {
                 "message1": f"{member.first_name} {member.last_name}!",
-                "message2": f"You currently have an active membership",
+                "message2": f"Your membership is ACTIVE.",
                 "message3": f"It expires on {membership_expiration}",
                 "profile_pic": member.profile_pic,
                 "alert_type": "alert-success",
@@ -80,8 +80,8 @@ def check_in(request):
         else:
             context = {
                 "message1": f"{member.first_name} {member.last_name}!",
-                "message2": f"Your membership is NOT ACTIVE",
-                "message3": f"Please buy a new membership to play",
+                "message2": f"Your membership is NOT ACTIVE.",
+                "message3": f"",
                 "purchase_button": True,
                 "profile_pic": member.profile_pic,
                 "alert_type": "alert-danger",
