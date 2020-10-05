@@ -51,12 +51,12 @@
       </div>
       {% for membership in memberships %}
       {% if membership.title == 'footer' %}
-        <br>
-        <div>
-          <p>
-            {{ membership.description }}
-          </p>
-        </div>
+      <br>
+      <div>
+        <p>
+          {{ membership.description }}
+        </p>
+      </div>
       {% endif %}
       {% endfor %}
     </div>
@@ -109,7 +109,7 @@
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFTOKEN': csrftoken,
-        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Secure",
       },
       body: JSON.stringify({
         amount: 100,
@@ -136,7 +136,7 @@
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFTOKEN': csrftoken,
-        "Set-Cookie": "HttpOnly;Secure;SameSite=Strict",
+        "Set-Cookie": "HttpOnly;Secure;SameSite=Secure",
       },
       body: JSON.stringify({
         amount: 100,
