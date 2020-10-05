@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from hotshot_web.storage_backends import PrivateMediaStorage
 from .managers import CustomUserManager
 from django.utils.timezone import localtime
+from datetime import datetime
 
 
 # Create your models here.
@@ -82,7 +83,7 @@ class CheckInLog(models.Model):
     first_name = models.CharField(max_length=100, null=True)
     last_name = models.CharField(max_length=100, null=True)
     phone_number = models.CharField(max_length=16, blank=True)
-    checked_in_at = models.DateTimeField(auto_now_add=True)
+    checked_in_at = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email}) checked in at {localtime(self.checked_in_at).strftime('%Y-%m-%d %I:%M:%S %p')}"
