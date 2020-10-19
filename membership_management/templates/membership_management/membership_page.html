@@ -111,9 +111,9 @@
         'X-CSRFTOKEN': csrftoken,
         "Set-Cookie": "HttpOnly;SameSite=None",
       },
-      body: JSON.stringify({
-        amount: 100,
-      }),
+      // body: JSON.stringify({
+      //   amount: 100,
+      // }),
       credentials: 'same-origin',
     })
       .then((response) => {
