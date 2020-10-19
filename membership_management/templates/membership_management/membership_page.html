@@ -116,7 +116,10 @@
       }),
       credentials: 'same-origin',
     })
-      .then((response) => response.json())
+      .then((response) => {
+        response.json()
+        console.log('response json:', response.json());
+      })
       .then((session) => {
         // redirect to checkout
         stripe.redirectToCheckout({ sessionId: session.id })
