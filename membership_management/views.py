@@ -309,7 +309,7 @@ def stripe_subscription_create_session(request, membership_id):
         try:
             selected_membership = Membership.objects.get(pk=int(membership_id))
         except Exception:
-            return HttpResponseRedirect(reverse("membership_page"))
+            return HttpResponse(status=400)
 
         # if the customer has a stripe customer id, include it in request
         if request.user.stripe_customer_id is None:
@@ -343,7 +343,7 @@ def stripe_subscription_create_session(request, membership_id):
         Payment.objects.create(member=request.user, membership=selected_membership,
                                amount=selected_membership.price, payment_processor_id=session['id'], status='pending')
 
-        return JsonResponse(session)
+        return JsonResponse({'id': session.id})
 
 
 def stripe_get_session(request):
