@@ -140,15 +140,17 @@
         'X-CSRFTOKEN': csrftoken,
         "Set-Cookie": "HttpOnly;Secure;SameSite=None",
       },
-      body: JSON.stringify({
-        amount: 100,
-      }),
+      // body: JSON.stringify({
+      //   amount: 100,
+      // }),
       credentials: 'same-origin',
     })
-      .then((response) => response.json())
+      .then((response) => {
+        return response.json()
+      })
       .then((session) => {
         // redirect to checkout
-        stripe.redirectToCheckout({ sessionId: session.id })
+        return stripe.redirectToCheckout({ sessionId: session.id })
         console.log('success', data);
       })
       .catch((error) => {
