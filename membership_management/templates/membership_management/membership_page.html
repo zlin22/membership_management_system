@@ -117,8 +117,8 @@
       credentials: 'same-origin',
     })
       .then((response) => {
+        var responseJson = response.json()
         console.log('response json', response.json());
-        response.json()
       })
       .then((session) => {
         // redirect to checkout
