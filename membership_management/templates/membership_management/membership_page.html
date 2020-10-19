@@ -117,13 +117,11 @@
       credentials: 'same-origin',
     })
       .then((response) => {
-        var responseJson = response.json()
-        console.log('response json', responseJson);
-        return responseJson
+        return response.json()
       })
       .then((session) => {
         // redirect to checkout
-        stripe.redirectToCheckout({ sessionId: session.id })
+        return stripe.redirectToCheckout({ sessionId: session.id })
         console.log('success', data);
       })
       .catch((error) => {
