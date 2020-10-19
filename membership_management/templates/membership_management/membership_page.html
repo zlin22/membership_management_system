@@ -106,15 +106,15 @@
     //pass checkout info to server to create session
     fetch('stripe_create_session/'.concat(buttonId), {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   'X-CSRFTOKEN': csrftoken,
-      //   "Set-Cookie": "HttpOnly;SameSite=None",
-      // },
-      // body: JSON.stringify({
-      //   amount: 100,
-      // }),
-      // credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFTOKEN': csrftoken,
+        "Set-Cookie": "HttpOnly;SameSite=None",
+      },
+      body: JSON.stringify({
+        amount: 100,
+      }),
+      credentials: 'same-origin',
     })
       .then((response) => response.json())
       .then((session) => {
