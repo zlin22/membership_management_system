@@ -343,7 +343,8 @@ def stripe_subscription_create_session(request, membership_id):
         Payment.objects.create(member=request.user, membership=selected_membership,
                                amount=selected_membership.price, payment_processor_id=session['id'], status='pending')
 
-        return JsonResponse({'id': session.id})
+        # return JsonResponse({'id': session.id})
+        return JsonResponse(session)
 
 
 def stripe_get_session(request):
